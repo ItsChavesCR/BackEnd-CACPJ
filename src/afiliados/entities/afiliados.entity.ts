@@ -6,5 +6,6 @@ import { Entity, Column } from "typeorm";
 export class Afiliado {
 
     @Column()
-    Cedula: number
+    Cedula: number 
+    
 }
