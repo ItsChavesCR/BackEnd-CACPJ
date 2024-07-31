@@ -29,6 +29,8 @@ import { Psa } from './psa/entities/psa.entity';
     CreditoModule],
   controllers: [],
   providers: [],
+
+  
 })
 
 export class AppModule {}
