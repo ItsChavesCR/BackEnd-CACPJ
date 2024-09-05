@@ -25,8 +25,8 @@ export class PreguntasFrecuentesService {
         });
     }
 
-    deletePreguntasFrecuentes(id: number): Promise<void> {
-        return this.preguntasFrecuentesRepository.delete({ Id_Pregunta: id }).then(() => {});
+    deletePreguntasFrecuentes(id: number) {
+        return this.preguntasFrecuentesRepository.delete({ Id_Pregunta: id });
     }
 
     updatePreguntasFrecuentes(id: number, PreguntasFrecuentes: UpdatePreguntasFrecuentesDto) {

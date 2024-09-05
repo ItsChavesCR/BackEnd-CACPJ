@@ -25,7 +25,7 @@ export class PreguntasFrecuentesController {
     }
 
     @Delete(':id')
-    delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    delete(@Param('id', ParseIntPipe) id: number) {
         return this.preguntasFrecuentesService.deletePreguntasFrecuentes(id);
     }
 
