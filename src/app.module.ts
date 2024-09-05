@@ -12,6 +12,7 @@ import { Psa } from './psa/entities/psa.entity';
 import { PreguntasFrecuentes } from './credito/CreditoEntities/preguntas_frecuentes.entity';
 import { TipoCreditoModule } from './credito/creditoModule/tipo_credito.module';
 import { PreguntasFrecuentesModule }  from './credito/creditoModule/pregunta_frecuente.module';
+import { ListaRequisitosModule } from './credito/creditoModule/lista_requisitos.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PreguntasFrecuentesModule }  from './credito/creditoModule/pregunta_fre
       synchronize: false
     }),
     TipoCreditoModule,
+    ListaRequisitosModule,
     PreguntasFrecuentesModule,
     PsaModule],
   controllers: [],
