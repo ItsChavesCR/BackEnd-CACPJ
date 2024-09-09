@@ -36,4 +36,16 @@ export class TipoCreditoController {
     return this.tipoCreditoService.updateTipoCredito(id, TipoCredito);
   }
 
+  /////Para Calculadora/////
+
+  @Get('calcular-cuota/:id')
+  async calcularCuota(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('monto') monto: number,
+    @Body('plazo') plazo: number
+  ): Promise<{ cuotaMensual: number }> {
+    const cuotaMensual = await this.tipoCreditoService.calcularCuota(id, monto, plazo);
+    return { cuotaMensual };
+  }
+
 }
