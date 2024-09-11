@@ -18,6 +18,8 @@ import { Psa } from './psa/psaEntities/Psa.entity';
 import { PsaModule } from './psa/psaModule/psa.module';
 import { FAQsAi } from './AreaInformativa/AreaInformativaEntities/FAQs_AI.entity';
 import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.module';
+import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas_AI.entity';
+import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.modu
       username: 'root',
       password: '123456',
       database: 'cacpjdb',
-      entities: [TipoCredito,PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi],
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI],
       synchronize: false
     }),
     TipoCreditoModule,
@@ -36,7 +38,8 @@ import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.modu
     PreguntasFrecuentesModule,
     PreRegistroPsaModule,
     PsaModule,
-    FAQsModule],
+    FAQsModule,
+    ConsultasModule],
   controllers: [],
   providers: [],
 
