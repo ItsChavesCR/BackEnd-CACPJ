@@ -9,5 +9,4 @@ export class ConsultasAI {
 
     @Column('text')
     Pregunta: string;
-
 }

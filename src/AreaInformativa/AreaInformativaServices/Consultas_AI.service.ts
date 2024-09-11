@@ -21,5 +21,4 @@ export class ConsultasAiService {
     deleteConsultas(id: number) {
         return this.ConsultasRepository.delete({ Id_Pregunta: id });
     }
-
 }

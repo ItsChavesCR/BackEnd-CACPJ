@@ -30,7 +30,7 @@ import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consult
       username: 'root',
       password: '123456',
       database: 'cacpjdb',
-      entities: [TipoCredito,PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI],
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI],
       synchronize: false
     }),
     TipoCreditoModule,

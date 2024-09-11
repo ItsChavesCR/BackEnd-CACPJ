@@ -9,4 +9,5 @@ import { ConsultasAiService } from '../AreaInformativaServices/Consultas_AI.serv
   controllers: [ConsultasAiController],
   providers: [ConsultasAiService],
 })
+
 export class ConsultasModule {}

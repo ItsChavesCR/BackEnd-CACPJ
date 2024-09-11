@@ -3,7 +3,6 @@ import { ConsultasAiService } from '../AreaInformativaServices/Consultas_AI.serv
 import { ConsultasAI } from '../AreaInformativaEntities/Consultas_AI.entity';
 import { CreateConsultasAiDto } from '../AreaInformativaDto/create-consultasAI.dto';
 
-
 @Controller('Consultas_AI')
 export class ConsultasAiController {
 
