@@ -14,6 +14,8 @@ import { TipoCreditoModule } from './credito/creditoModule/tipo_credito.module';
 import { PreguntasFrecuentesModule }  from './credito/creditoModule/pregunta_frecuente.module';
 import { ListaRequisitosModule } from './credito/creditoModule/lista_requisitos.module';
 import { PreRegistroPsa } from './psa/psaEntities/pre_registro.entity';
+import { Psa } from './psa/psaEntities/Psa.entity';
+import { PsaModule } from './psa/psaModule/psa.module';
 
 @Module({
   imports: [
@@ -24,13 +26,14 @@ import { PreRegistroPsa } from './psa/psaEntities/pre_registro.entity';
       username: 'root',
       password: '123456',
       database: 'cacpjdb',
-      entities: [TipoCredito,PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa],
+      entities: [TipoCredito,PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa,Psa],
       synchronize: false
     }),
     TipoCreditoModule,
     ListaRequisitosModule,
     PreguntasFrecuentesModule,
-    PreRegistroPsaModule],
+    PreRegistroPsaModule,
+    PsaModule],
   controllers: [],
   providers: [],
 
