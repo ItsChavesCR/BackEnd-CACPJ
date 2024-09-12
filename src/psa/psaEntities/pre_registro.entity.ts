@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
+@Entity({name: 'Pre_RegistroPsa'})
 export class PreRegistroPsa {
     @PrimaryGeneratedColumn()
     id: number;
@@ -19,7 +19,6 @@ export class PreRegistroPsa {
 
     @Column()
     modalidadPSA: string;
-
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fechaPreRegistro: Date;
