@@ -20,17 +20,19 @@ import { FAQsAi } from './AreaInformativa/AreaInformativaEntities/FAQs_AI.entity
 import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.module';
 import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas_AI.entity';
 import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
+import { Modalidad } from './psa/psaEntities/modalidad.entity';
+import { ModalidadModule } from './psa/psaModule/modalidad.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3307,
+      port: 3306,
       username: 'root',
       password: '123456',
       database: 'cacpjdb',
-      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI],
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad],
       synchronize: false
     }),
     TipoCreditoModule,
@@ -39,7 +41,8 @@ import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consult
     PreRegistroPsaModule,
     PsaModule,
     FAQsModule,
-    ConsultasModule],
+    ConsultasModule,
+    ModalidadModule],
   controllers: [],
   providers: [],
 
