@@ -18,6 +18,9 @@ export class PreRegistroPsa {
     cedula: string;
 
     @Column()
+    Telefono: string;
+
+    @Column()
     modalidadPSA: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

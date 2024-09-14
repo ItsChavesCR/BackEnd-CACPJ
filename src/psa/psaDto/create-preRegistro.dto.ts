@@ -19,6 +19,10 @@ export class CreatePreRegistroPsaDto {
 
     @IsString()
     @IsNotEmpty()
+    Telefono: string;
+
+    @IsString()
+    @IsNotEmpty()
     modalidadPSA: string;
 }
 
