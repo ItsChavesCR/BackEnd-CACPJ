@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 
 import { Module } from '@nestjs/common';
-import { AfiliadosModule } from './afiliados/afiliados.module';
 import { GanaderiaModule } from './ganaderia/ganaderia.module';
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,10 +20,11 @@ import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consult
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
-import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+
 
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path'; // Necesario para las plantillas de correo
+import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
 
 @Module({
   imports: [
