@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Afiliado } from '../afiliadosEntities/afiliados.entity';
 import { Repository } from 'typeorm';
@@ -29,19 +29,30 @@ export class AfiliadosService {
         return afiliadoFound;
     }
 
-    async createAfiliado(afiliado : CreateAfiliadoDto){
-        const afiliadoFound = await this.afiliadosRepository.findOne({
-            where:{cedula : afiliado.cedula
-            }
-        })
-
-        if(afiliadoFound){
-            return new HttpException('Afiliado already exists', HttpStatus.CONFLICT);
+    async createAfiliado(afiliado: CreateAfiliadoDto): Promise<Afiliado> {
+        // Validación adicional para la cédula
+        if (!/^\d{9}$/.test(afiliado.cedula)) {
+            throw new BadRequestException('La cédula debe tener 9 dígitos');
         }
-
-        const newAfiliado = this.afiliadosRepository.create(afiliado)
-        return this.afiliadosRepository.save(newAfiliado)
+    
+        const afiliadoFound = await this.afiliadosRepository.findOne({
+            where: { cedula: afiliado.cedula }
+        });
+    
+        if (afiliadoFound) {
+            throw new HttpException('Afiliado already exists', HttpStatus.CONFLICT);
+        }
+    
+        const newAfiliado = this.afiliadosRepository.create({
+            ...afiliado,
+        });
+    
+        const savedAfiliado = await this.afiliadosRepository.save(newAfiliado);
+    
+    
+        return savedAfiliado;
     }
+    
 
     async updateAfiliado (afiliadoId : number, afiliado : UpdateAfiliadoDto){
         const afiliadoFound = await this.afiliadosRepository.findOne({
