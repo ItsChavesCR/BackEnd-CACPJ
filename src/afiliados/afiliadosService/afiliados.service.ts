@@ -54,19 +54,16 @@ export class AfiliadosService {
     }
     
 
-    async updateAfiliado (afiliadoId : number, afiliado : UpdateAfiliadoDto){
-        const afiliadoFound = await this.afiliadosRepository.findOne({
-            where:{
-                afiliadoId 
-            }
-        })
-
-        if(!afiliadoFound){
-            return new HttpException('User not found', HttpStatus.NOT_FOUND)
+    async updateAfiliado(afiliadoId: number, afiliado: UpdateAfiliadoDto) {
+        const result = await this.afiliadosRepository.update({ afiliadoId }, afiliado);
+    
+        if (result.affected === 0) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
-        const uptadeUser = Object.assign( afiliadoFound, afiliado )
-        return this.afiliadosRepository.save(uptadeUser)
+    
+        return result;
     }
+    
 
     async deleteAfiliado(afiliadoId : number){  
         const result = await this.afiliadosRepository.delete({ afiliadoId });
@@ -77,4 +74,32 @@ export class AfiliadosService {
 
         return result;
     }
+
+    async getAfiliadosWithFilters(
+        ubicacion?: string, 
+        genero?: string, 
+        actividades?: string, 
+        comercializa?: boolean
+    ): Promise<Afiliado[]> {
+        const queryBuilder = this.afiliadosRepository.createQueryBuilder('afiliado');
+
+        if (ubicacion) {
+            queryBuilder.andWhere('afiliado.direccion LIKE :ubicacion', { ubicacion: `%${ubicacion}%` });
+        }
+
+        if (genero) {
+            queryBuilder.andWhere('afiliado.genero = :genero', { genero });
+        }
+
+        if (actividades) {
+            queryBuilder.andWhere('afiliado.actividadesAgricolas LIKE :actividades', { actividades: `%${actividades}%` });
+        }
+
+        if (comercializa !== undefined) {
+            queryBuilder.andWhere('afiliado.comercializacion = :comercializa', { comercializa });
+        }
+
+        return await queryBuilder.getMany();
+    }
+
 }

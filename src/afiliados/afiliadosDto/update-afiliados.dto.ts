@@ -10,5 +10,5 @@ export class UpdateAfiliadoDto {
     actividadesAgricolas : string
     telefono : number
     annoNacimiento : number
-
+    comercializacion: boolean
 }
