@@ -1,6 +1,4 @@
-/* eslint-disable prettier/prettier */
-
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { AfiliadosService } from '../afiliadosService/afiliados.service';
 import { Afiliado } from '../afiliadosEntities/afiliados.entity';
 import { CreateAfiliadoDto } from '../afiliadosDto/create-afiliados.dto';
@@ -12,18 +10,23 @@ export class AfiliadosController {
     constructor(private afiliadosService: AfiliadosService) { }
 
     @Get()
-    getAfiliados(): Promise<Afiliado[]> {
-        return this.afiliadosService.getAfiliados()
+    getAfiliados(
+        @Query('ubicacion') ubicacion?: string, 
+        @Query('genero') genero?: string, 
+        @Query('actividades') actividades?: string,
+        @Query('comercializa') comercializa?: boolean  // Nuevo filtro
+    ): Promise<Afiliado[]> {
+        return this.afiliadosService.getAfiliadosWithFilters(ubicacion, genero, actividades, comercializa);
     }
 
     @Get(':afiliadoId')
     getAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number) {
-        return this.afiliadosService.getAfiliado(afiliadoId)
+        return this.afiliadosService.getAfiliado(afiliadoId);
     }
 
     @Post()
     createAfiliado(@Body() newAfiliado: CreateAfiliadoDto) {
-        return this.afiliadosService.createAfiliado(newAfiliado)
+        return this.afiliadosService.createAfiliado(newAfiliado);
     }
 
     @Delete(':afiliadoId')
@@ -32,10 +35,7 @@ export class AfiliadosController {
     }
 
     @Patch(':afiliadoId')
-    updateUser(@Param('afiliadoId', ParseIntPipe) afiliadoId: number, @Body() afiliado: UpdateAfiliadoDto) {
-        return this.afiliadosService.updateAfiliado(afiliadoId, afiliado)
-
+    updateAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number, @Body() afiliado: UpdateAfiliadoDto) {
+        return this.afiliadosService.updateAfiliado(afiliadoId, afiliado);
     }
-
 }
-
