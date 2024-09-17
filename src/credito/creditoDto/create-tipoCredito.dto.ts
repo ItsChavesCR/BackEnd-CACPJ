@@ -1,9 +1,22 @@
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+
 export class CreateTipoCreditoDto {
-    id: number;
+    @IsNotEmpty()
     Nombre_TipoCredito: string;
+
+    @IsNumber()
     Monto_Minimo: number;
+
+    @IsNumber()
     Monto_Maximo: number;
-    Tasa_Interes: number;
+
+    @IsOptional()
+    @IsNumber()
+    Tasa_Interes?: number;
+
+    @IsNumber()
     Plazo_Minimo: number;
+
+    @IsNumber()
     Plazo_Maximo: number;
 }
