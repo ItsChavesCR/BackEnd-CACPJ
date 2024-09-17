@@ -27,6 +27,8 @@ import { join } from 'path'; // Necesario para las plantillas de correo
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
 import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
 import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
+import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
+import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 
 @Module({
   imports: [
@@ -37,7 +39,7 @@ import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module
       username: 'root',
       password: 'ksfUlaHQlBEkIWQFSMyGOVRaovqKjaQk',
       database: 'cacpjdb',
-      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado,TipoGarantia],
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado,FuenteFondos,TipoGarantia,],
       synchronize: true
     }),
 
@@ -74,6 +76,7 @@ import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module
     FAQsModule,
     ConsultasModule,
     ModalidadModule,
+    FuenteFondosModule,
     AfiliadosModule],
 
   controllers: [],
