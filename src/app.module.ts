@@ -25,6 +25,8 @@ import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path'; // Necesario para las plantillas de correo
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
+import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 
 @Module({
   imports: [
@@ -35,7 +37,7 @@ import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
       username: 'root',
       password: 'ksfUlaHQlBEkIWQFSMyGOVRaovqKjaQk',
       database: 'cacpjdb',
-      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado],
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado,TipoGarantia],
       synchronize: true
     }),
 
@@ -64,6 +66,7 @@ import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
 
     // Otros módulos
     TipoCreditoModule,
+    TipoGarantiaModule,
     ListaRequisitosModule,
     PreguntasFrecuentesModule,
     PreRegistroPsaModule,

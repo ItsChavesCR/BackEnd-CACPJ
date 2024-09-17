@@ -36,6 +36,7 @@ export class TipoCreditoController {
     return this.tipoCreditoService.updateTipoCredito(id, TipoCredito);
   }
 
+  /*
   /////Para Calculadora/////
 
   @Get('calcular-cuota/:id')
@@ -47,5 +48,5 @@ export class TipoCreditoController {
     const cuotaMensual = await this.tipoCreditoService.calcularCuota(id, monto, plazo);
     return { cuotaMensual };
   }
-
+ */
 }
