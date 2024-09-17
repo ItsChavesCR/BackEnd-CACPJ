@@ -37,7 +37,7 @@ export class TipoCreditoService {
 
     ////////// Calculadora/////////////77
 
-    async calcularCuota(tipoCreditoId: number, monto: number, plazo: number): Promise<number> {
+    /*async calcularCuota(tipoCreditoId: number, monto: number, plazo: number): Promise<number> {
         // Obtén el tipo de crédito por ID para obtener la tasa de interés
         const tipoCredito = await this.tipoCreditoRepository.findOne({
             where: { Id_TipoCredito: tipoCreditoId }
@@ -57,5 +57,6 @@ export class TipoCreditoService {
 
          return parseFloat(cuotaMensual.toFixed(2));
     }
+         */
 
 }

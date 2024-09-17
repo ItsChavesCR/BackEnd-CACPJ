@@ -1,11 +1,9 @@
 /* eslint-disable prettier/prettier */
+
 import { Module } from '@nestjs/common';
-import { AfiliadosModule } from './afiliados/afiliados.module';
 import { GanaderiaModule } from './ganaderia/ganaderia.module';
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Afiliado } from './afiliados/entities/afiliados.entity';
-import { Ganaderia } from './ganaderia/entities/ganaderia.entity';
 import { TipoCredito } from './credito/CreditoEntities/tipo_credito.entity';
 import { ListaRequisitos } from './credito/CreditoEntities/lista_requisitos.entity';
 import { PreguntasFrecuentes } from './credito/CreditoEntities/preguntas_frecuentes.entity';
@@ -21,21 +19,28 @@ import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas
 import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
+import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
+
 
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path'; // Necesario para las plantillas de correo
+import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
+import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
+import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
+import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
+      host: 'junction.proxy.rlwy.net',
+      port: 31987,
       username: 'root',
-      password: '123456',
+      password: 'ksfUlaHQlBEkIWQFSMyGOVRaovqKjaQk',
       database: 'cacpjdb',
-      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad],
-      synchronize: false
+      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado,FuenteFondos,TipoGarantia,],
+      synchronize: true
     }),
 
     // Módulo para manejo de correos
@@ -63,6 +68,7 @@ import { join } from 'path'; // Necesario para las plantillas de correo
 
     // Otros módulos
     TipoCreditoModule,
+    TipoGarantiaModule,
     ListaRequisitosModule,
     PreguntasFrecuentesModule,
     PreRegistroPsaModule,
@@ -70,7 +76,9 @@ import { join } from 'path'; // Necesario para las plantillas de correo
     FAQsModule,
     ConsultasModule,
     ModalidadModule,
-  ],
+    FuenteFondosModule,
+    AfiliadosModule],
+
   controllers: [],
   providers: [],
 })

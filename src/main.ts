@@ -1,8 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+    // Habilitar la validación global
+    app.useGlobalPipes(new ValidationPipe({
+      whitelist: true,  // Elimina propiedades no definidas en los DTO
+      forbidNonWhitelisted: true,  // Lanza una excepción si se envían propiedades no válidas
+      transform: true,  // Transforma los tipos de datos según el DTO
+    }));
   
   // Habilitar CORS
   app.enableCors({
