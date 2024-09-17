@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config'; // Para cargar variables de entorno
+import { ConfigModule } from '@nestjs/config'; 
 
 // Importación de tus módulos
 import { GanaderiaModule } from './ganaderia/ganaderia.module';
@@ -26,8 +26,9 @@ import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
 import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
-
-// Importación de la librería SendGrid
+import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
+import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
+import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 import * as sgMail from '@sendgrid/mail';
 
 @Module({
@@ -52,7 +53,7 @@ import * as sgMail from '@sendgrid/mail';
         Afiliado,
         TipoGarantia,
       ],
-      synchronize: true, // ¡Solo para desarrollo! No uses esto en producción
+      synchronize: true, 
     }),
 
     // Importación de otros módulos
@@ -65,9 +66,10 @@ import * as sgMail from '@sendgrid/mail';
     FAQsModule,
     ConsultasModule,
     ModalidadModule,
+    FuenteFondosModule,
     AfiliadosModule,
-    TipoGarantiaModule,
-  ],
+    TipoGarantiaModule],
+  
   controllers: [],
   providers: [],
 })

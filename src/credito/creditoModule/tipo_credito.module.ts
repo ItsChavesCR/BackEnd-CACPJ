@@ -8,5 +8,6 @@ import { TipoCredito } from '../CreditoEntities/tipo_credito.entity';
   imports: [TypeOrmModule.forFeature([TipoCredito])],
   controllers: [TipoCreditoController],
   providers: [TipoCreditoService],
+  exports: [TypeOrmModule],
 })
 export class TipoCreditoModule {}

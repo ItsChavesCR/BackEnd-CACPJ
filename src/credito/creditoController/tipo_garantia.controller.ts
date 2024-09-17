@@ -3,7 +3,7 @@ import { TipoGarantiaService } from '../creditoServices/tipo_garantia.service';
 import { CreateTipoGarantiaDto } from '../creditoDto/create-tipoGarantia.dto';
 import { UpdateTipoGarantiaDto } from '../creditoDto/update-tipoGarantia.dto';
 
-@Controller('tipo-garantia')
+@Controller('tipo_garantia')
 export class TipoGarantiaController {
   constructor(private readonly tipoGarantiaService: TipoGarantiaService) {}
 

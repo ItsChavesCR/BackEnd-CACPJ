@@ -1,19 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ListaRequisitos } from '../CreditoEntities/lista_requisitos.entity';
 import { CreateListaRequisitosDto } from '../creditoDto/create-listaRequisitos.dto';
 import { UpdateListaRequisitosDto } from '../creditoDto/update-listaRequisitos.dto';
+import { TipoCredito } from '../CreditoEntities/tipo_credito.entity';
 
 @Injectable()
 export class ListaRequisitosService {
-    constructor(@InjectRepository(ListaRequisitos) private listaRequisitosRepository: Repository<ListaRequisitos>) {}
+    constructor(
+        @InjectRepository(ListaRequisitos)
+        private listaRequisitosRepository: Repository<ListaRequisitos>,
+        @InjectRepository(TipoCredito)
+        private tipoCreditoRepository: Repository<TipoCredito>,
+    ) {}
 
     async createListaRequisitos(createDto: CreateListaRequisitosDto): Promise<ListaRequisitos> {
-        // Convertimos el array en una cadena JSON
+        const tipoCredito = await this.tipoCreditoRepository.findOne({ where: { Id_TipoCredito: createDto.tipoCreditoId } });
+        if (!tipoCredito) {
+            throw new NotFoundException('Tipo de crédito no encontrado');
+        }
+
         const newRequisito = this.listaRequisitosRepository.create({
-            Descripcion: JSON.stringify(createDto.Descripcion), // Convertimos array a JSON string
-            tipoCredito: { Id_TipoCredito: createDto.tipoCreditoId },
+            Descripcion: JSON.stringify(createDto.Descripcion),  // Convierte array a JSON string
+            tipoCredito: tipoCredito,  // Asigna el objeto de tipo crédito
         });
 
         return this.listaRequisitosRepository.save(newRequisito);
@@ -21,32 +31,60 @@ export class ListaRequisitosService {
 
     async getListaRequisitos(): Promise<ListaRequisitos[]> {
         const requisitos = await this.listaRequisitosRepository.find({ relations: ['tipoCredito'] });
-        // Convertimos las descripciones JSON string a array
+
+        // Convertir el string JSON de la descripción a un array de strings
         return requisitos.map(requisito => ({
             ...requisito,
-            Descripcion: JSON.parse(requisito.Descripcion), // Convertimos JSON string a array
+            Descripcion: JSON.parse(requisito.Descripcion),  // Convierte JSON string a array
         }));
     }
 
     async getListaRequisitosById(id: number): Promise<ListaRequisitos> {
         const requisito = await this.listaRequisitosRepository.findOne({
             where: { Id_Requisito: id },
-            relations: ['tipoCredito']
+            relations: ['tipoCredito'],
         });
-        if (requisito) {
-            requisito.Descripcion = JSON.parse(requisito.Descripcion); // Convertimos JSON string a array
+
+        if (!requisito) {
+            throw new NotFoundException('Requisito no encontrado');
         }
+
+        requisito.Descripcion = JSON.parse(requisito.Descripcion);  // Convierte JSON string a array
         return requisito;
     }
 
-    deleteListaRequisitos(id: number) {
-        return this.listaRequisitosRepository.delete({ Id_Requisito: id });
+    async deleteListaRequisitos(id: number): Promise<void> {
+        const result = await this.listaRequisitosRepository.delete({ Id_Requisito: id });
+        if (result.affected === 0) {
+            throw new NotFoundException('Requisito no encontrado');
+        }
     }
 
-    updateListaRequisitos(id: number, updateDto: UpdateListaRequisitosDto) {
-        if (updateDto.Descripcion) {
-            updateDto.Descripcion = JSON.stringify(updateDto.Descripcion); // Convertimos array a JSON string
+    async updateListaRequisitos(id: number, updateDto: UpdateListaRequisitosDto): Promise<ListaRequisitos> {
+        const requisito = await this.listaRequisitosRepository.findOne({ where: { Id_Requisito: id } });
+        if (!requisito) {
+            throw new NotFoundException('Requisito no encontrado');
         }
-        return this.listaRequisitosRepository.update({ Id_Requisito: id }, updateDto);
-    }
+    
+        // Verifica y actualiza el tipo de crédito
+        if (updateDto.tipoCreditoId) {
+            const tipoCredito = await this.tipoCreditoRepository.findOne({
+                where: { Id_TipoCredito: updateDto.tipoCreditoId },  // Cambiado a un objeto de búsqueda
+            });
+            if (!tipoCredito) {
+                throw new NotFoundException('Tipo de crédito no encontrado');
+            }
+            requisito.tipoCredito = tipoCredito;
+        }
+    
+        // Verifica y convierte la descripción si fue actualizada
+        if (updateDto.Descripcion) {
+            console.log('Antes de convertir:', updateDto.Descripcion); // Verificar el contenido
+            requisito.Descripcion = JSON.stringify(updateDto.Descripcion);  // Convierte array a JSON string
+        }
+    
+        // Elimina el Object.assign para actualizar campos de forma específica
+        return this.listaRequisitosRepository.save(requisito);
+    } 
+    
 }
