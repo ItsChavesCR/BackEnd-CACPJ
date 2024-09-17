@@ -1,4 +1,12 @@
+
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+
 export class UpdateTipoGarantiaDto {
-     Nombre_TipoGarantia?: string;
-     Id_TipoCredito?: number; // Llave foránea opcional
+   @IsOptional()
+   @IsNotEmpty()
+   Nombre_TipoGarantia?: string;
+
+   @IsOptional()
+   @IsNumber({}, { message: 'El campo Id_TipoCredito debe ser un número' })
+   Id_TipoCredito?: number; // Llave foránea opcional
   }
