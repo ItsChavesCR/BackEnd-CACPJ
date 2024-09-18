@@ -2,16 +2,15 @@
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { AreaInformativaController } from '../AreaInformativaController/AreaInformativa.controller';
 import { AreaInformativa } from '../AreaInformativaEntities/AreaInformativa.entity';
-import { Categoria } from '../AreaInformativaEntities/Categoria.entity';
-import { InformacionController } from '../AreaInformativaController/AreaInformativa.controller';
-import { InformacionService } from '../AreaInformativaServices/AreaInformativa.service';
+import { CategoriaModule } from './Categoria.module';
+import { AreaInformativaService } from '../AreaInformativaServices/AreaInformativa.service';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AreaInformativa, Categoria])], 
-  controllers: [InformacionController],
-  providers: [InformacionService],
-  exports: [InformacionService], 
+  imports: [TypeOrmModule.forFeature([AreaInformativa]), CategoriaModule],  // Asegúrate de importar CategoriaModule aquí
+  controllers: [AreaInformativaController],
+  providers: [AreaInformativaService],
 })
-export class InformacionModule {}
+export class AreaInformativaModule {}
