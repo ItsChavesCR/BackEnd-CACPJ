@@ -26,7 +26,6 @@ import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
 import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
-import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 import * as sgMail from '@sendgrid/mail';
@@ -52,6 +51,7 @@ import * as sgMail from '@sendgrid/mail';
         Modalidad,
         Afiliado,
         TipoGarantia,
+        FuenteFondos
       ],
       synchronize: true, 
     }),
@@ -68,7 +68,8 @@ import * as sgMail from '@sendgrid/mail';
     ModalidadModule,
     FuenteFondosModule,
     AfiliadosModule,
-    TipoGarantiaModule],
+    TipoGarantiaModule,
+    FuenteFondosModule],
   
   controllers: [],
   providers: [],
