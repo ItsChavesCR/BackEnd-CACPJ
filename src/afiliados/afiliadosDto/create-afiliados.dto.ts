@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { IsBoolean, IsEmail, IsIn, IsNotEmpty, IsNumber, IsString, Length, Min, Max } from "class-validator"
 
 export class CreateAfiliadoDto {

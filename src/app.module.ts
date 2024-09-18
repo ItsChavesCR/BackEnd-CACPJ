@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config'; 
-
 // Importación de tus módulos
 import { GanaderiaModule } from './ganaderia/ganaderia.module';
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
@@ -24,11 +23,18 @@ import { FAQsAi } from './AreaInformativa/AreaInformativaEntities/FAQs_AI.entity
 import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas_AI.entity';
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { join } from 'path'; // Necesario para las plantillas de correo
+import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { Categoria } from './AreaInformativa/AreaInformativaEntities/Categoria.entity';
+import { AreaInformativa } from './AreaInformativa/AreaInformativaEntities/AreaInformativa.entity';
+import { InformacionModule } from './AreaInformativa/AreaInformativaModule/Informativa.module';
 import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
 import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 import * as sgMail from '@sendgrid/mail';
+
 
 @Module({
   imports: [
@@ -50,10 +56,13 @@ import * as sgMail from '@sendgrid/mail';
         ConsultasAI,
         Modalidad,
         Afiliado,
+        Categoria, 
+        AreaInformativa,
         TipoGarantia,
-        FuenteFondos,
+        FuenteFondos
       ],
       synchronize: true, 
+
     }),
 
     // Importación de otros módulos
@@ -69,7 +78,9 @@ import * as sgMail from '@sendgrid/mail';
     FuenteFondosModule,
     AfiliadosModule,
     TipoGarantiaModule,
-    FuenteFondosModule],
+    FuenteFondosModule,
+    AfiliadosModule,
+    InformacionModule],
   
   controllers: [],
   providers: [],
