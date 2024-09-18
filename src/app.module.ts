@@ -13,7 +13,6 @@ import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.modu
 import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
-import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 
 // Importación de entidades
 import { TipoCredito } from './credito/CreditoEntities/tipo_credito.entity';
@@ -52,6 +51,7 @@ import * as sgMail from '@sendgrid/mail';
         Modalidad,
         Afiliado,
         TipoGarantia,
+        FuenteFondos,
       ],
       synchronize: true, 
     }),
@@ -68,7 +68,8 @@ import * as sgMail from '@sendgrid/mail';
     ModalidadModule,
     FuenteFondosModule,
     AfiliadosModule,
-    TipoGarantiaModule],
+    TipoGarantiaModule,
+    FuenteFondosModule],
   
   controllers: [],
   providers: [],
