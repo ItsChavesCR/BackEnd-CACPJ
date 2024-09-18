@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config'; 
@@ -23,17 +24,15 @@ import { FAQsAi } from './AreaInformativa/AreaInformativaEntities/FAQs_AI.entity
 import { ConsultasAI } from './AreaInformativa/AreaInformativaEntities/Consultas_AI.entity';
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { join } from 'path'; // Necesario para las plantillas de correo
-import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
 import { Categoria } from './AreaInformativa/AreaInformativaEntities/Categoria.entity';
 import { AreaInformativa } from './AreaInformativa/AreaInformativaEntities/AreaInformativa.entity';
-import { InformacionModule } from './AreaInformativa/AreaInformativaModule/Informativa.module';
+import { AreaInformativaModule } from './AreaInformativa/AreaInformativaModule/Informativa.module';
 import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
 import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 import * as sgMail from '@sendgrid/mail';
+import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categoria.module';
 
 
 @Module({
@@ -80,7 +79,8 @@ import * as sgMail from '@sendgrid/mail';
     TipoGarantiaModule,
     FuenteFondosModule,
     AfiliadosModule,
-    InformacionModule],
+    AreaInformativaModule,
+    CategoriaModule],
   
   controllers: [],
   providers: [],

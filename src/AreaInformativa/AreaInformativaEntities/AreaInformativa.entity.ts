@@ -24,7 +24,7 @@ export class AreaInformativa {
   multimedia: string;
 
   // Relación con Categoria, nullable si no siempre tiene una categoría
-  @ManyToOne(() => Categoria, categoria => categoria.areaInformativa, { nullable: true })
-  @JoinColumn({ name: 'categoriaId' })  // Este es el campo clave foránea
+  @ManyToOne(() => Categoria, { eager: true })  // Relación ManyToOne
+  @JoinColumn({ name: 'categoriaId' })  // El nombre de la clave foránea
   categoria: Categoria;
 }
