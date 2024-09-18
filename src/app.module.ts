@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 
 import { Module } from '@nestjs/common';
-import { GanaderiaModule } from './ganaderia/ganaderia.module';
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TipoCredito } from './credito/CreditoEntities/tipo_credito.entity';
@@ -20,11 +19,13 @@ import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consult
 import { Modalidad } from './psa/psaEntities/modalidad.entity';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
 import { Afiliado } from './afiliados/afiliadosEntities/afiliados.entity';
-
-
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path'; // Necesario para las plantillas de correo
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { Categoria } from './AreaInformativa/AreaInformativaEntities/Categoria.entity';
+import { AreaInformativa } from './AreaInformativa/AreaInformativaEntities/AreaInformativa.entity';
+import { InformacionModule } from './AreaInformativa/AreaInformativaModule/Informativa.module';
+
 
 @Module({
   imports: [
@@ -35,8 +36,19 @@ import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
       username: 'root',
       password: 'ksfUlaHQlBEkIWQFSMyGOVRaovqKjaQk',
       database: 'cacpjdb',
-      entities: [TipoCredito, PreguntasFrecuentes, ListaRequisitos, PreRegistroPsa, Psa, FAQsAi, ConsultasAI, Modalidad, Afiliado],
-      synchronize: true
+      entities: [
+          TipoCredito,
+          PreguntasFrecuentes, 
+          ListaRequisitos, 
+          PreRegistroPsa, 
+          Psa, 
+          FAQsAi, 
+          ConsultasAI, 
+          Modalidad, 
+          Afiliado, 
+          Categoria, 
+          AreaInformativa],
+        synchronize: true
     }),
 
     // Módulo para manejo de correos
@@ -71,7 +83,8 @@ import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
     FAQsModule,
     ConsultasModule,
     ModalidadModule,
-    AfiliadosModule],
+    AfiliadosModule,
+    InformacionModule],
 
   controllers: [],
   providers: [],
