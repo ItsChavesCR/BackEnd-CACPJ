@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Psa } from './Psa.entity';
+import { PreRegistroPsa } from './pre_registro.entity';
 
 @Entity({ name: 'Modalidad' })
 export class Modalidad {
@@ -11,4 +12,7 @@ export class Modalidad {
 
   @OneToMany(() => Psa, (psa) => psa.modalidad)
   psa: Psa[];
+
+  @OneToMany(() => PreRegistroPsa, (pre_registro) => pre_registro.modalidad)
+  pre_registro: PreRegistroPsa[];
 }

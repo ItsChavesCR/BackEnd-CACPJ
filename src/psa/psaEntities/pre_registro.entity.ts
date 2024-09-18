@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Modalidad } from './modalidad.entity';
 
 @Entity({name: 'Pre_RegistroPsa'})
 export class PreRegistroPsa {
@@ -20,9 +21,11 @@ export class PreRegistroPsa {
     @Column()
     Telefono: string;
 
-    @Column()
-    modalidadPSA: string;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fechaPreRegistro: Date;
+
+    @ManyToOne(() => Modalidad, (modalidad) => modalidad.pre_registro)
+    @JoinColumn({ name: 'Id_Modalidad' })  // Esto asegura que la columna sea 'Id_Modalidad'
+    modalidad: Modalidad;
+
 }

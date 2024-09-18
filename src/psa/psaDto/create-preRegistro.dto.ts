@@ -23,7 +23,7 @@ export class CreatePreRegistroPsaDto {
 
     @IsString()
     @IsNotEmpty()
-    modalidadPSA: string;
+    Nombre_Modalidad: string;
 }
 
 
