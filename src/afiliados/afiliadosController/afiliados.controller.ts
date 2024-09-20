@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Res } from '@nestjs/common';
 import { AfiliadosService } from '../afiliadosService/afiliados.service';
 import { Afiliado } from '../afiliadosEntities/afiliados.entity';
 import { CreateAfiliadoDto } from '../afiliadosDto/create-afiliados.dto';
 import { UpdateAfiliadoDto } from '../afiliadosDto/update-afiliados.dto';
+import { get } from 'http';
 
 @Controller('afiliados')
 export class AfiliadosController {
@@ -11,8 +12,8 @@ export class AfiliadosController {
 
     @Get()
     getAfiliados(
-        @Query('ubicacion') ubicacion?: string, 
-        @Query('genero') genero?: string, 
+        @Query('ubicacion') ubicacion?: string,
+        @Query('genero') genero?: string,
         @Query('actividades') actividades?: string,
         @Query('comercializa') comercializa?: boolean  // Nuevo filtro
     ): Promise<Afiliado[]> {
@@ -37,5 +38,25 @@ export class AfiliadosController {
     @Patch(':afiliadoId')
     updateAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number, @Body() afiliado: UpdateAfiliadoDto) {
         return this.afiliadosService.updateAfiliado(afiliadoId, afiliado);
+    }
+
+
+    @Get('GenerarPDF/descargar')
+    async downloadPDF(
+        @Query('ubicacion') ubicacion: string,
+        @Query('genero') genero: string,
+        @Query('actividades') actividades: string,
+        @Query('comercializa') comercializa: boolean,
+        @Res() res
+    ): Promise<void> {
+        const buffer = await this.afiliadosService.generarPDFafiliado({ ubicacion, genero, actividades, comercializa });
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=afiliados_reporte.pdf',
+            'Content-Length': buffer.length,
+        });
+
+        res.end(buffer);
     }
 }
