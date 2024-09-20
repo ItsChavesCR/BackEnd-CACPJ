@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config'; 
 // Importación de tus módulos
-import { GanaderiaModule } from './ganaderia/ganaderia.module';
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
 import { TipoCreditoModule } from './credito/creditoModule/tipo_credito.module';
 import { PreguntasFrecuentesModule } from './credito/creditoModule/pregunta_frecuente.module';
@@ -33,6 +32,8 @@ import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
 import * as sgMail from '@sendgrid/mail';
 import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categoria.module';
+import { Ganadero } from './ganaderia/ganaderiaEntities/ganadero.entity';
+import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
 
 
 @Module({
@@ -58,6 +59,7 @@ import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categor
         Categoria, 
         AreaInformativa,
         TipoGarantia,
+        Ganadero,
         FuenteFondos
       ],
       synchronize: true, 
@@ -65,7 +67,6 @@ import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categor
     }),
 
     // Importación de otros módulos
-    GanaderiaModule,
     PreRegistroPsaModule,
     TipoCreditoModule,
     PreguntasFrecuentesModule,
@@ -80,6 +81,7 @@ import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categor
     FuenteFondosModule,
     AfiliadosModule,
     AreaInformativaModule,
+    GanaderoModule,
     CategoriaModule],
   
   controllers: [],
