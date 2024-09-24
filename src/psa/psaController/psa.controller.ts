@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, Res } from '@nestjs/common';
 import { Psa } from '../psaEntities/Psa.entity';
 import { PsaService } from '../psaServices/psa.service';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
@@ -7,7 +7,7 @@ import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 
 @Controller('psa')
 export class PsaController {
-    constructor(private readonly psaService: PsaService) {}
+    constructor(private readonly psaService: PsaService) { }
 
     @Get()
     getPsa(): Promise<Psa[]> {
@@ -33,4 +33,23 @@ export class PsaController {
     updatePsa(@Param('id', ParseIntPipe) id: number, @Body() updateDto: CreatePsaDto) {
         return this.psaService.updatePsa(id, updateDto);
     }
+
+    @Get('GenerarPsaPDF/descargar')
+    async downloadPDF(
+        @Query('ubicacion') ubicacion: string,
+        @Query('modalidad') modalidad: string,
+        @Query('cedula') cedula: string,
+        @Res() res
+    ): Promise<void> {
+        const buffer = await this.psaService.generarPDFPsa({ ubicacion, modalidad, cedula});
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=psa_reporte.pdf',
+            'Content-Length': buffer.length,
+        });
+
+        res.end(buffer);
+    }
+
 }
