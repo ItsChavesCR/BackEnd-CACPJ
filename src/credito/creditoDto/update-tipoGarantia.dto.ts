@@ -8,5 +8,5 @@ export class UpdateTipoGarantiaDto {
 
    @IsOptional()
    @IsNumber({}, { message: 'El campo Id_TipoCredito debe ser un número' })
-   Id_TipoCredito?: number; // Llave foránea opcional
+   tipoCreditoId?: number; // Llave foránea opcional
   }
