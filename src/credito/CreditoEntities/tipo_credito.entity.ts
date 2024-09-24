@@ -16,6 +16,9 @@ export class TipoCredito {
   requisitos: ListaRequisitos[];
 
   // Nueva relación con TipoGarantia
-  @OneToMany(() => TipoGarantia, (garantia) => garantia.tipoCredito)
+ // @OneToMany(() => TipoGarantia, (garantia) => garantia.tipoCredito)
+  // garantias: TipoGarantia[];
+
+  @OneToMany(() => TipoGarantia, (tipoGarantia) => tipoGarantia.tipoCredito)
   garantias: TipoGarantia[];
 }

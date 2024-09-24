@@ -34,6 +34,8 @@ import * as sgMail from '@sendgrid/mail';
 import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categoria.module';
 import { Ganadero } from './ganaderia/ganaderiaEntities/ganadero.entity';
 import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
+import { CreditoModule } from './credito/creditoModule/credito.module';
+
 
 
 @Module({
@@ -62,7 +64,7 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
         Ganadero,
         FuenteFondos
       ],
-      synchronize: true, 
+      synchronize: false, 
 
     }),
 
@@ -82,6 +84,7 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
     AfiliadosModule,
     AreaInformativaModule,
     GanaderoModule,
+    CreditoModule,
     CategoriaModule],
   
   controllers: [],

@@ -36,6 +36,8 @@ export class TipoCreditoController {
     return this.tipoCreditoService.updateTipoCredito(id, TipoCredito);
   }
 
+  
+
   /*
   /////Para Calculadora/////
 
