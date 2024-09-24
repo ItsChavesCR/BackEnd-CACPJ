@@ -41,7 +41,7 @@ export class AfiliadosController {
     }
 
 
-    @Get('GenerarPDF/descargar')
+    @Get('GenerarAfiliadosPDF/descargar')
     async downloadPDF(
         @Query('ubicacion') ubicacion: string,
         @Query('genero') genero: string,

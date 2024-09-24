@@ -62,7 +62,7 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
         Ganadero,
         FuenteFondos
       ],
-      synchronize: true, 
+      synchronize: false, 
 
     }),
 
