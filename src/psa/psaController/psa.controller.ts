@@ -10,8 +10,12 @@ export class PsaController {
     constructor(private readonly psaService: PsaService) { }
 
     @Get()
-    getPsa(): Promise<Psa[]> {
-        return this.psaService.getPsa();
+    getPsa(
+        @Query('cedula') cedula?: string,
+        @Query('anoIngreso') anoIngreso?: number,
+        @Query('modalidad') modalidad?: string
+      ): Promise<Psa[]> {
+        return this.psaService.getPsaWithFilters(cedula, anoIngreso, modalidad);
     }
 
     @Get(':id')
@@ -36,12 +40,12 @@ export class PsaController {
 
     @Get('GenerarPsaPDF/descargar')
     async downloadPDF(
-        @Query('ubicacion') ubicacion: string,
+        @Query('anoIngreso') anoIngreso: number,
         @Query('modalidad') modalidad: string,
         @Query('cedula') cedula: string,
         @Res() res
     ): Promise<void> {
-        const buffer = await this.psaService.generarPDFPsa({ ubicacion, modalidad, cedula});
+        const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula});
 
         res.set({
             'Content-Type': 'application/pdf',
