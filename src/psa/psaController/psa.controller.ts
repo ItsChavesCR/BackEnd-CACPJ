@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, Res, NotFoundException } from '@nestjs/common';
 import { Psa } from '../psaEntities/Psa.entity';
 import { PsaService } from '../psaServices/psa.service';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
+
 
 
 
@@ -14,7 +15,7 @@ export class PsaController {
         @Query('cedula') cedula?: string,
         @Query('anoIngreso') anoIngreso?: number,
         @Query('modalidad') modalidad?: string
-      ): Promise<Psa[]> {
+    ): Promise<Psa[]> {
         return this.psaService.getPsaWithFilters(cedula, anoIngreso, modalidad);
     }
 
@@ -24,9 +25,9 @@ export class PsaController {
     }
 
     @Post()
-    create(@Body() createDto: CreatePsaDto): Promise<Psa> {
-        return this.psaService.createPsa(createDto);
-    }
+  async createPsa(@Body() createPsaDto: CreatePsaDto): Promise<Psa> {
+    return this.psaService.createPsa(createPsaDto);
+  }
 
     @Delete(':id')
     delete(@Param('id', ParseIntPipe) id: number) {
@@ -45,7 +46,7 @@ export class PsaController {
         @Query('cedula') cedula: string,
         @Res() res
     ): Promise<void> {
-        const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula});
+        const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula });
 
         res.set({
             'Content-Type': 'application/pdf',
@@ -56,4 +57,14 @@ export class PsaController {
         res.end(buffer);
     }
 
+    @Get('historial/cedula/:cedula')
+  async obtenerHistorialPorCedula(@Param('cedula') cedula: string): Promise<{ año: number, modalidad: string }[]> {
+    const historial = await this.psaService.obtenerHistorialPorCedula(cedula);
+
+    if (historial.length === 0) {
+      throw new NotFoundException(`No se encontró historial de participación para la cédula ${cedula}`);
+    }
+
+    return historial;
+  }
 }
