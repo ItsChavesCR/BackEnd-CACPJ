@@ -5,6 +5,7 @@ import { Psa } from '../psaEntities/Psa.entity';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
 
+
 const PDFDocument = require('pdfkit-table');
 
 @Injectable()
@@ -39,13 +40,6 @@ export class PsaService {
     // Guardar el nuevo PSA
     return this.psaRepository.save(newPsa);
   }
-
-  async getPsa(): Promise<Psa[]> {
-    return this.psaRepository.find({
-      relations: ['modalidad'], // Asegúrate de cargar la relación con modalidad
-    });
-  }
-
 
   async getPsaById(id: number): Promise<Psa> {
     return this.psaRepository.findOne({
@@ -157,6 +151,21 @@ export class PsaService {
       console.error('Error generating PDF:', error);
       return Buffer.from('');  // Retornamos un buffer vacío en caso de error
     }
+  }
+
+  async obtenerHistorialPorCedula(cedula: string): Promise<{ año: number, modalidad: string }[]> {
+    // Buscar todos los registros de PSA asociados a la cédula
+    const psas = await this.psaRepository.find({
+      where: { Cedula: cedula },
+      relations: ['modalidad'],  // Asegurarnos de incluir la relación con la modalidad
+      select: ['Año_Ingreso', 'modalidad']  // Seleccionar solo el año y la modalidad
+    });
+
+    // Mapear los resultados para devolver un objeto con el año de ingreso y el nombre de la modalidad
+    return psas.map(psa => ({
+      año: psa.Año_Ingreso,
+      modalidad: psa.modalidad.Nombre_Modalidad,  // 'Nombre_Modalidad' es el campo de la modalidad
+    }));
   }
 }
 
