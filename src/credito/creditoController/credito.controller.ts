@@ -26,7 +26,7 @@ export class CreditoController {
   }
 
 
-  /////////7
+  /////////
   @Get('fuentes-fondos')
   async getAllFuenteFondos(): Promise<any> {
     return await this.creditoService.getAllFuenteFondos();

@@ -35,6 +35,8 @@ import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categor
 import { Ganadero } from './ganaderia/ganaderiaEntities/ganadero.entity';
 import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
 import { CreditoModule } from './credito/creditoModule/credito.module';
+import { EnviosModule } from './ganaderia/ganaderiaModule/envios.module';
+import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
 
 
 
@@ -62,9 +64,11 @@ import { CreditoModule } from './credito/creditoModule/credito.module';
         AreaInformativa,
         TipoGarantia,
         Ganadero,
+        Envios,
         FuenteFondos
       ],
-      synchronize: false, 
+      synchronize: false,
+      logging: false,
 
     }),
 
@@ -84,6 +88,7 @@ import { CreditoModule } from './credito/creditoModule/credito.module';
     AfiliadosModule,
     AreaInformativaModule,
     GanaderoModule,
+    EnviosModule,
     CreditoModule,
     CategoriaModule],
   

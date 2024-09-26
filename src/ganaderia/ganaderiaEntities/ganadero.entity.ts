@@ -1,7 +1,8 @@
 // src/ganadero/entities/ganadero.entity.ts
 
-import { Entity, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Afiliado } from 'src/afiliados/afiliadosEntities/afiliados.entity';
+import { Envios } from 'src/ganaderia/ganaderiaEntities/envios.entity';
 
 @Entity('ganadero')
 export class Ganadero {
@@ -11,4 +12,7 @@ export class Ganadero {
   @OneToOne(() => Afiliado) // Relación 1:1 con Afiliado
   @JoinColumn({ name: 'idGanadero' }) // El campo FK es el mismo que el de la PK
   afiliado: Afiliado;
+
+  @OneToMany(() => Envios, (envios) => envios.ganadero) // Relación 1:N con Envios
+  envios: Envios[];  // Un ganadero puede tener múltiples envíos
 }
