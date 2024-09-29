@@ -16,11 +16,12 @@ export class EnviosService {
     private readonly ganaderoRepository: Repository<Ganadero>,
   ) {}
 
-    // Método para obtener todos los envíos
-    async findAll(): Promise<Envios[]> {
-      return this.enviosRepository.find({ relations: ['ganadero'] });
-    }
+  // Método para obtener todos los envíos
+  async findAll(): Promise<Envios[]> {
+    return this.enviosRepository.find({ relations: ['ganadero'] });
+  }
 
+  // Crea un envío
   async create(createEnviosDto: CreateEnviosDto): Promise<Envios> {
     const { idGanadero, ...rest } = createEnviosDto;
   
@@ -39,9 +40,13 @@ export class EnviosService {
       ganadero, // Asocia el Ganadero encontrado
     });
   
+    // Calcula el total antes de guardar
+    envio.total = this.calculateTotal(envio);
+
     return this.enviosRepository.save(envio);
   }
 
+  // Encuentra un envío por ID y calcula el total
   async findOne(id: number): Promise<Envios> {
     const envio = await this.enviosRepository.findOne({
       where: { idEnvio: id },
@@ -50,18 +55,38 @@ export class EnviosService {
     if (!envio) {
       throw new NotFoundException(`Envio with ID ${id} not found`);
     }
+
+    // Calcula el total al obtener el envío
+    envio.total = this.calculateTotal(envio);
+
     return envio;
   }
 
+  // Actualiza un envío
   async update(id: number, updateEnviosDto: UpdateEnviosDto): Promise<Envios> {
     const envio = await this.enviosRepository.preload({
       idEnvio: id,
       ...updateEnviosDto,
     });
+
     if (!envio) {
       throw new NotFoundException(`Envio with ID ${id} not found`);
     }
+
+    // Calcula el total antes de guardar los cambios
+    envio.total = this.calculateTotal(envio);
+
     return this.enviosRepository.save(envio);
+  }
+
+  // Calcula el total sumando montoTotal, bonoProductor, reconocimiento, y excedente
+  private calculateTotal(envio: Envios): number {
+    return (
+      (envio.montoTotal || 0) +
+      (envio.bonoProductor || 0) +
+      (envio.reconocimiento || 0) +
+      (envio.excedente || 0)
+    );
   }
 
   /*
@@ -69,6 +94,5 @@ export class EnviosService {
     const envio = await this.findOne(id);
     await this.enviosRepository.remove(envio);
   }
-
   */
 }
