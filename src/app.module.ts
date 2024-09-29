@@ -37,6 +37,8 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
 import { CreditoModule } from './credito/creditoModule/credito.module';
 import { EnviosModule } from './ganaderia/ganaderiaModule/envios.module';
 import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
+import { patchAfiliado } from './afiliados/afiliadosEntities/patchAfiliado.entity';
+import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.module';
 
 
 
@@ -65,7 +67,8 @@ import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
         TipoGarantia,
         Ganadero,
         Envios,
-        FuenteFondos
+        FuenteFondos,
+        patchAfiliado
       ],
       synchronize: false,
       logging: false,
@@ -90,7 +93,8 @@ import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
     GanaderoModule,
     EnviosModule,
     CreditoModule,
-    CategoriaModule],
+    CategoriaModule,
+    PatchAfiliadoModule],
   
   controllers: [],
   providers: [],
