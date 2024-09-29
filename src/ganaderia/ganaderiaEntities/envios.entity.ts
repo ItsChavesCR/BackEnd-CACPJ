@@ -1,5 +1,4 @@
-// src/envios/entities/envios.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Ganadero } from 'src/ganaderia/ganaderiaEntities/ganadero.entity';
 
 @Entity('envios')
@@ -10,8 +9,9 @@ export class Envios {
   @Column({ type: 'date' })
   fechaEnvio: Date;
 
-  @Column({ type: 'varchar', length: 50 })
-  liquidacionREA: string;
+  // Modificamos el campo para que sea de tipo number
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  liquidacionREA: number;
 
   @Column()
   totalHembras: number;
@@ -36,6 +36,20 @@ export class Envios {
 
   @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true })
   excedente: number;
+
+  @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true })
+  total: number;  // Campo para almacenar el total
+
+  
+  @BeforeInsert()
+  @BeforeUpdate()
+  calcularTotal() {
+    this.total =
+      (this.montoTotal || 0) +
+      (this.bonoProductor || 0) +
+      (this.reconocimiento || 0) +
+      (this.excedente || 0);
+  }
 
   @ManyToOne(() => Ganadero, (ganadero) => ganadero.envios) // Relación N:1 con Ganadero
   @JoinColumn({ name: 'idGanadero' }) // Llave foránea hacia Ganadero
