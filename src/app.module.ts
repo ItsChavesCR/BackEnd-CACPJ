@@ -30,7 +30,6 @@ import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
 import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
-import * as sgMail from '@sendgrid/mail';
 import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categoria.module';
 import { Ganadero } from './ganaderia/ganaderiaEntities/ganadero.entity';
 import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
@@ -40,11 +39,13 @@ import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
 import { patchAfiliado } from './afiliados/afiliadosEntities/patchAfiliado.entity';
 import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.module';
 
-
-
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Carga las variables de entorno del archivo .env
+    // Configura ConfigModule para que sea global
+    ConfigModule.forRoot({
+      isGlobal: true, // Esto permite que el ConfigService esté disponible en todos los módulos sin tener que importarlo cada vez
+    }),
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'junction.proxy.rlwy.net',
@@ -68,11 +69,10 @@ import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.m
         Ganadero,
         Envios,
         FuenteFondos,
-        patchAfiliado
+        patchAfiliado,
       ],
       synchronize: false,
       logging: false,
-
     }),
 
     // Importación de otros módulos
@@ -94,13 +94,10 @@ import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.m
     EnviosModule,
     CreditoModule,
     CategoriaModule,
-    PatchAfiliadoModule],
-  
+    PatchAfiliadoModule,
+  ],
+
   controllers: [],
   providers: [],
 })
-export class AppModule {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY); // Configura la API Key de SendGrid
-  }
-}
+export class AppModule {}
