@@ -11,7 +11,7 @@ export class CreateEnviosDto {
   fechaEnvio: Date;
 
   @IsString()
-  liquidacionREA: string;
+  liquidacionREA: number;
 
   @IsNumber()
   @Type(() => Number)
