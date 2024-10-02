@@ -10,10 +10,24 @@ export class TipoCreditoService {
   
     constructor(@InjectRepository(TipoCredito)private readonly tipoCreditoRepository: Repository<TipoCredito>) {}
         
-    createTipoCredito(tipoCreditoDto: CreateTipoCreditoDto) {
+    async createTipoCredito(tipoCreditoDto: CreateTipoCreditoDto): Promise<TipoCredito> {
+        // Validación: No se permite un tipo de crédito con el mismo nombre
+        const existingTipoCredito = await this.tipoCreditoRepository.findOne({
+          where: { Nombre_TipoCredito: tipoCreditoDto.Nombre_TipoCredito },
+        });
+        if (existingTipoCredito) {
+          throw new Error(`Ya existe un tipo de crédito con el nombre: ${tipoCreditoDto.Nombre_TipoCredito}`);
+        }
+    
+        // Validación: Asegurarse que todos los campos estén completos
+        if (!tipoCreditoDto.Nombre_TipoCredito) {
+          throw new Error('Todos los campos son obligatorios.');
+        }
+    
+        // Si pasa las validaciones, se crea el nuevo tipo de crédito
         const newTipoCredito = this.tipoCreditoRepository.create(tipoCreditoDto);
         return this.tipoCreditoRepository.save(newTipoCredito);
-    }
+      }
 
     getTipoCredito() {
         return this.tipoCreditoRepository.find()

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, ConflictException, BadRequestException } from '@nestjs/common';
 import { TipoCreditoService } from '../creditoServices/tipo_credito.service';
 import { CreateTipoCreditoDto } from '../creditoDto/create-tipoCredito.dto';
 import { TipoCredito } from '../CreditoEntities/tipo_credito.entity';
@@ -21,8 +21,20 @@ export class TipoCreditoController {
   }
 
   @Post()
-  create(@Body() createTipoCreditoDto: CreateTipoCreditoDto): Promise<TipoCredito> {
-    return this.tipoCreditoService.createTipoCredito(createTipoCreditoDto);
+  async create(@Body() createTipoCreditoDto: CreateTipoCreditoDto): Promise<TipoCredito> {
+    try {
+      return await this.tipoCreditoService.createTipoCredito(createTipoCreditoDto);
+    } catch (error) {
+      // Manejo específico de errores según el mensaje de la excepción
+      if (error.message.includes('Ya existe un tipo de crédito con el nombre')) {
+        throw new ConflictException(error.message);
+      }
+      if (error.message.includes('Todos los campos son obligatorios')) {
+        throw new BadRequestException(error.message);
+      }
+      // Manejo genérico para otros errores
+      throw new BadRequestException('Ha ocurrido un error al crear el tipo de crédito.');
+    }
   }
 
   @Delete(':id')
@@ -36,19 +48,4 @@ export class TipoCreditoController {
     return this.tipoCreditoService.updateTipoCredito(id, TipoCredito);
   }
 
-  
-
-  /*
-  /////Para Calculadora/////
-
-  @Get('calcular-cuota/:id')
-  async calcularCuota(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('monto') monto: number,
-    @Body('plazo') plazo: number
-  ): Promise<{ cuotaMensual: number }> {
-    const cuotaMensual = await this.tipoCreditoService.calcularCuota(id, monto, plazo);
-    return { cuotaMensual };
-  }
- */
 }
