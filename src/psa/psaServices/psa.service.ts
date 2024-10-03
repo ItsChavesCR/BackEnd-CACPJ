@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Psa } from '../psaEntities/Psa.entity';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
+import { UpdatePsaDto } from '../psaDto/update-Psa.dto';
 
 
 const PDFDocument = require('pdfkit-table');
@@ -42,10 +43,16 @@ export class PsaService {
   }
 
   async getPsaById(id: number): Promise<Psa> {
-    return this.psaRepository.findOne({
+    const psa = await this.psaRepository.findOne({
       where: { Id_Psa: id },
-      relations: ['modalidad'], // Asegúrate de cargar la relación con modalidad
+      relations: ['modalidad', 'pagos'],  // Cargar la modalidad y los pagos
     });
+  
+    if (!psa) {
+      throw new NotFoundException('PSA not found');
+    }
+  
+    return psa;  // Retorna el PSA con los pagos incluidos
   }
 
 
@@ -53,13 +60,28 @@ export class PsaService {
     return this.psaRepository.delete({ Id_Psa: id });
   }
 
-  updatePsa(id: number, updateDto: CreatePsaDto) {
-    return this.psaRepository.update({ Id_Psa: id }, updateDto);
+  async updatePsa(id: number, updateDto: UpdatePsaDto) {
+    // Primero encuentra el registro de Psa con la relación 'modalidad'
+    const psa = await this.psaRepository.findOne({
+      where: { Id_Psa: id },
+      relations: ['modalidad'], // Carga la relación 'modalidad'
+    });
+  
+    if (!psa) {
+      throw new NotFoundException('Psa not found');
+    }
+  
+    // Actualiza los campos de Psa (sin modificar modalidad)
+    Object.assign(psa, updateDto);
+  
+    // Guarda los cambios
+    return this.psaRepository.save(psa);
   }
 
   async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<Psa[]> {
     const query = this.psaRepository.createQueryBuilder('psa')
-      .leftJoinAndSelect('psa.modalidad', 'modalidad');  // Relacionamos la modalidad
+      .leftJoinAndSelect('psa.modalidad', 'modalidad')  // Relacionamos la modalidad
+      .leftJoinAndSelect('psa.pagos', 'pagos');  //Relacionamos el pago
 
     // Filtro por cédula
     if (cedula) {
