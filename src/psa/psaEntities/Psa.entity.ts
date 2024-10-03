@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Modalidad } from './modalidad.entity';
+import { PagoPsa } from './pago_psa.entity';
+
 
 @Entity({ name: 'Agregar_Psa' })
 export class Psa {
@@ -46,4 +48,7 @@ export class Psa {
   @ManyToOne(() => Modalidad, (modalidad) => modalidad.psa)
   @JoinColumn({ name: 'Id_Modalidad' })  // Esto asegura que la columna sea 'Id_Modalidad'
   modalidad: Modalidad;
+
+  @OneToMany(() => PagoPsa, (pagoPsa) => pagoPsa.psa)
+  pagos: PagoPsa[];  // Relación con pagos
 }

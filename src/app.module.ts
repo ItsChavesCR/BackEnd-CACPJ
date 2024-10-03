@@ -12,6 +12,8 @@ import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.modu
 import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.module';
+
 
 // Importación de entidades
 import { TipoCredito } from './credito/CreditoEntities/tipo_credito.entity';
@@ -37,7 +39,9 @@ import { CreditoModule } from './credito/creditoModule/credito.module';
 import { EnviosModule } from './ganaderia/ganaderiaModule/envios.module';
 import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
 import { patchAfiliado } from './afiliados/afiliadosEntities/patchAfiliado.entity';
-import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.module';
+import { PagoPsa } from './psa/psaEntities/pago_psa.entity';
+import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
+
 
 @Module({
   imports: [
@@ -70,8 +74,9 @@ import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.m
         Envios,
         FuenteFondos,
         patchAfiliado,
+        PagoPsa,
       ],
-      synchronize: false,
+      synchronize: true,
       logging: false,
     }),
 
@@ -95,6 +100,7 @@ import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.m
     CreditoModule,
     CategoriaModule,
     PatchAfiliadoModule,
+    PagoPsaModule,
   ],
 
   controllers: [],
