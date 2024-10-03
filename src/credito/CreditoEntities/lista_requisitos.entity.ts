@@ -5,7 +5,8 @@ import { TipoCredito } from './tipo_credito.entity';
 export class ListaRequisitos {
     @PrimaryGeneratedColumn()
     Id_Requisito: number;
-
+    
+    @Column({ type: 'longtext' })
     @Column()
     Descripcion: string;  // Guarda como JSON string
 
