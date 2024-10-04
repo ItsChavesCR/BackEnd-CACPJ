@@ -7,7 +7,6 @@ export class ListaRequisitos {
     Id_Requisito: number;
     
     @Column({ type: 'longtext' })
-    @Column()
     Descripcion: string;  // Guarda como JSON string
 
     @ManyToOne(() => TipoCredito, (tipoCredito) => tipoCredito.requisitos)
