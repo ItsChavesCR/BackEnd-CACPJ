@@ -41,6 +41,8 @@ import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
 import { patchAfiliado } from './afiliados/afiliadosEntities/patchAfiliado.entity';
 import { PagoPsa } from './psa/psaEntities/pago_psa.entity';
 import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
+import { Usuario } from './auth/loginEntities/login.entity';
+import { LoginModule } from './auth/loginModule/login.module';
 
 
 @Module({
@@ -75,6 +77,7 @@ import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
         FuenteFondos,
         patchAfiliado,
         PagoPsa,
+        Usuario
       ],
       synchronize: true,
       logging: false,
@@ -101,6 +104,7 @@ import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
     CategoriaModule,
     PatchAfiliadoModule,
     PagoPsaModule,
+    LoginModule
   ],
 
   controllers: [],

@@ -1,24 +1,23 @@
-import { Controller, Post, Body } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { LoginService } from '../loginService/login.service';
-import { CreateLoginDto } from '../loginDto/create-login.dto';
+import { LoginDto } from '../loginDto/login.dto';
+import { JwtAuthGuard } from '../jwt-auth.guard';
+
 
 @Controller('auth')
 export class LoginController {
-  constructor(private readonly loginService: LoginService) {}
-
-  @Post('register')
-  async register(@Body() createLoginDto: CreateLoginDto) {
-    const { area, password } = createLoginDto;
-    return this.loginService.register(area, password);
-  }
+  constructor(private readonly authService: LoginService) {}
 
   @Post('login')
-  async login(@Body() createLoginDto: CreateLoginDto) {
-    const { area, password } = createLoginDto;
-    const user = await this.loginService.validateUser(area, password);
-    if (!user) {
-      return { message: 'Área o contraseña incorrectos' };
-    }
-    return this.loginService.login(user);
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
+  }
+
+  @Get('protected')  // Esta es una ruta protegida
+  @UseGuards(JwtAuthGuard)  // Aplicamos el guard para protegerla
+  getProtectedResource() {
+    return { message: 'Accediste a una ruta protegida!' };
   }
 }
+
