@@ -79,7 +79,7 @@ import { LoginModule } from './auth/loginModule/login.module';
         PagoPsa,
         Usuario
       ],
-      synchronize: true,
+      synchronize: false,
       logging: false,
     }),
 
