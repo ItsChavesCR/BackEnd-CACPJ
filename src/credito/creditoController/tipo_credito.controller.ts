@@ -21,9 +21,13 @@ export class TipoCreditoController {
   }
 
   @Post()
-  async create(@Body() createTipoCreditoDto: CreateTipoCreditoDto): Promise<TipoCredito> {
+  async create(@Body() createTipoCreditoDto: CreateTipoCreditoDto): Promise<{ message: string, data: TipoCredito }> {
     try {
-      return await this.tipoCreditoService.createTipoCredito(createTipoCreditoDto);
+      const tipoCredito = await this.tipoCreditoService.createTipoCredito(createTipoCreditoDto);
+      return {
+        message: 'Tipo de crédito agregado exitosamente',
+        data: tipoCredito,
+      };
     } catch (error) {
       // Manejo específico de errores según el mensaje de la excepción
       if (error.message.includes('Ya existe un tipo de crédito con el nombre')) {
@@ -36,6 +40,7 @@ export class TipoCreditoController {
       throw new BadRequestException('Ha ocurrido un error al crear el tipo de crédito.');
     }
   }
+  
 
   @Delete(':id')
    deleteTipoCredito(@Param('id', ParseIntPipe) id: number) {
