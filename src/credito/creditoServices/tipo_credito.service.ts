@@ -4,11 +4,17 @@ import { Repository } from 'typeorm';
 import { TipoCredito } from '../CreditoEntities/tipo_credito.entity';
 import {CreateTipoCreditoDto} from '../creditoDto/create-tipoCredito.dto'
 import { UpdateTipoCreditoDto } from '../creditoDto/update-tipoCredito.dto';
-
+import { FuenteFondos } from '../CreditoEntities/fuente_fondos.entity';
 @Injectable()
 export class TipoCreditoService {
   
-    constructor(@InjectRepository(TipoCredito)private readonly tipoCreditoRepository: Repository<TipoCredito>) {}
+  constructor(
+    @InjectRepository(TipoCredito)
+    private readonly tipoCreditoRepository: Repository<TipoCredito>,
+
+    @InjectRepository(FuenteFondos)
+    private readonly fuenteFondosRepository: Repository<FuenteFondos>
+) {}
         
     async createTipoCredito(tipoCreditoDto: CreateTipoCreditoDto): Promise<TipoCredito> {
         // Validación: No se permite un tipo de crédito con el mismo nombre
@@ -49,28 +55,48 @@ export class TipoCreditoService {
         return this.tipoCreditoRepository.update({Id_TipoCredito: id}, TipoCredito)
     }
 
-    ////////// Calculadora/////////////77
+// Método para obtener datos de la vista filtrando por ID
+async getCreditDetailsView(tipoCreditoId: number) {
+  const result = await this.tipoCreditoRepository.query(
+      'CALL GetTipoCredito(?)', // Usa el símbolo de interrogación para los parámetros
+      [tipoCreditoId] // Pasa el parámetro como un arreglo
+  );
 
-    /*async calcularCuota(tipoCreditoId: number, monto: number, plazo: number): Promise<number> {
-        // Obtén el tipo de crédito por ID para obtener la tasa de interés
-        const tipoCredito = await this.tipoCreditoRepository.findOne({
-            where: { Id_TipoCredito: tipoCreditoId }
-        });
+  return result[0]; // Retorna los resultados del procedimiento
+}
 
-        if (!tipoCredito) {
-            throw new Error('Tipo de crédito no encontrado');
-        }
+// Método para obtener datos de TipoGarantia
+async getTipoGarantia(tipoCreditoId: number) {
+  const result = await this.tipoCreditoRepository.query(
+      'CALL GetTipoGarantia(?)',
+      [tipoCreditoId]
+  );
+  return result[0]; // Devuelve las garantías que corresponden al tipo de crédito seleccionado
+}
 
-        const tasaInteresAnual = tipoCredito.Tasa_Interes;
-        const tasaInteresMensual = tasaInteresAnual / 12 / 100; // Convierte a tasa mensual
-        const n = plazo; // Número de meses
+async getFuenteFondos(tipoGarantiaId: number) {
+  const result = await this.tipoCreditoRepository.query(
+      'CALL GetFuenteFondos(?)',
+      [tipoGarantiaId]
+  );
+  return result[0]; // Devuelve las fuentes de fondos que corresponden al tipo de garantía seleccionada
+}
 
-        // Fórmula para calcular la cuota mensual
-        const cuotaMensual = (monto * tasaInteresMensual * Math.pow(1 + tasaInteresMensual, n)) /
-         (Math.pow(1 + tasaInteresMensual, n) - 1);
 
-         return parseFloat(cuotaMensual.toFixed(2));
-    }
-         */
+//Obtener tasa interes 
+async getTasaInteres(tipoCreditoId: number, tipoGarantiaId: number, fuenteFondoId: number) {
+  // Encuentra la fuente de fondos por su ID
+  const fuenteFondo = await this.fuenteFondosRepository.findOne({
+      where: { Id_FuenteFondos: fuenteFondoId },
+  });
+
+  if (!fuenteFondo) {
+      throw new Error('Fuente de fondo no encontrada');
+  }
+
+  // Retorna la tasa de interés de la fuente de fondos
+  return { tasaInteres: fuenteFondo.Tasa_Interes };
+}
+
 
 }

@@ -48,4 +48,31 @@ export class TipoCreditoController {
     return this.tipoCreditoService.updateTipoCredito(id, TipoCredito);
   }
 
+
+  @Get('credit-details/:id')
+  async getCreditDetailsById(@Param('id') id: number) {
+      return this.tipoCreditoService.getCreditDetailsView(id); // Llama al método que ejecuta el procedimiento almacenado
+  }
+
+
+  @Get('tipos-garantia/:tipoCreditoId')
+  async getTiposGarantia(@Param('tipoCreditoId') tipoCreditoId: number) {
+      return this.tipoCreditoService.getTipoGarantia(tipoCreditoId);
+  }
+
+  @Get('fuentes-fondos/:tipoGarantiaId')
+  async getFuentesFondos(@Param('tipoGarantiaId') tipoGarantiaId: number) {
+      return this.tipoCreditoService.getFuenteFondos(tipoGarantiaId);
+  }
+
+  // Nuevo endpoint para obtener la tasa de interés
+  @Get('tasa-interes/:tipoCreditoId/:tipoGarantiaId/:fuenteFondoId')
+  async getTasaInteres(
+      @Param('tipoCreditoId') tipoCreditoId: number,
+      @Param('tipoGarantiaId') tipoGarantiaId: number,
+      @Param('fuenteFondoId') fuenteFondoId: number,
+  ) {
+      return this.tipoCreditoService.getTasaInteres(tipoCreditoId, tipoGarantiaId, fuenteFondoId);
+  }
+
 }
