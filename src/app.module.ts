@@ -104,7 +104,8 @@ import { LoginModule } from './auth/loginModule/login.module';
     CategoriaModule,
     PatchAfiliadoModule,
     PagoPsaModule,
-    LoginModule
+    LoginModule,
+
   ],
 
   controllers: [],

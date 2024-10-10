@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Put, Request } from '@nestjs/common';
 import { LoginService } from '../loginService/login.service';
 import { LoginDto } from '../loginDto/login.dto';
 import { JwtAuthGuard } from '../jwt-auth.guard';
+import { ChangePasswordDto } from '../loginDto/change-password.dto';
 
 
 @Controller('auth')
@@ -18,6 +19,13 @@ export class LoginController {
   @UseGuards(JwtAuthGuard)  // Aplicamos el guard para protegerla
   getProtectedResource() {
     return { message: 'Accediste a una ruta protegida!' };
+  }
+
+  @Put('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
+    const userId = req.user.sub; 
+    return this.authService.changePassword(userId, changePasswordDto);
   }
 }
 
