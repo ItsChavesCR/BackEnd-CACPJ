@@ -43,6 +43,8 @@ import { PagoPsa } from './psa/psaEntities/pago_psa.entity';
 import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
 import { Usuario } from './auth/loginEntities/login.entity';
 import { LoginModule } from './auth/loginModule/login.module';
+import { UploadModule } from './pre-registro/pre-registro.module';
+
 
 
 @Module({
@@ -105,7 +107,7 @@ import { LoginModule } from './auth/loginModule/login.module';
     PatchAfiliadoModule,
     PagoPsaModule,
     LoginModule,
-
+    UploadModule
   ],
 
   controllers: [],
