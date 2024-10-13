@@ -27,5 +27,11 @@ export class LoginController {
     const userId = req.user.sub; 
     return this.authService.changePassword(userId, changePasswordDto);
   }
+
+  // Nuevo endpoint para obtener las áreas de los usuarios
+  @Get('usuarios')
+  async getAllAreas() {
+    return this.authService.getAllAreas(); // Llama a un método en el servicio
+  }
 }
 
