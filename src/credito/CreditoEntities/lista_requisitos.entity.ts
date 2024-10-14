@@ -5,8 +5,8 @@ import { TipoCredito } from './tipo_credito.entity';
 export class ListaRequisitos {
     @PrimaryGeneratedColumn()
     Id_Requisito: number;
-
-    @Column()
+    
+    @Column({ type: 'longtext' })
     Descripcion: string;  // Guarda como JSON string
 
     @ManyToOne(() => TipoCredito, (tipoCredito) => tipoCredito.requisitos)

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { TipoGarantia } from './tipo_garantia.entity';
 
 @Entity({ name: 'Fuente_Fondos' })
@@ -26,5 +26,6 @@ export class FuenteFondos {
   Tasa_Interes: number;
 
   @ManyToOne(() => TipoGarantia, (tipoGarantia) => tipoGarantia.fuentesFondos)
+  @JoinColumn({ name: 'Id_TipoGarantia' })  // Aquí especificamos el nombre correcto de la columna
   tipoGarantia: TipoGarantia;
 }

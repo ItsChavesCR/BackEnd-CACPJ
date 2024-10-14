@@ -12,6 +12,8 @@ import { FAQsModule } from './AreaInformativa/AreaInformativaModule/FAQs_AI.modu
 import { ConsultasModule } from './AreaInformativa/AreaInformativaModule/Consultas_AI.module';
 import { ModalidadModule } from './psa/psaModule/modalidad.module';
 import { AfiliadosModule } from './afiliados/afiliadosModule/afiliados.module';
+import { PatchAfiliadoModule } from './afiliados/afiliadosModule/patchAfiliado.module';
+
 
 // Importación de entidades
 import { TipoCredito } from './credito/CreditoEntities/tipo_credito.entity';
@@ -30,15 +32,28 @@ import { TipoGarantia } from './credito/CreditoEntities/tipo_garantia.entity';
 import { TipoGarantiaModule } from './credito/creditoModule/tipo_garantia.module';
 import { FuenteFondosModule } from './credito/creditoModule/fuente_fondos.module';
 import { FuenteFondos } from './credito/CreditoEntities/fuente_fondos.entity';
-import * as sgMail from '@sendgrid/mail';
 import { CategoriaModule } from './AreaInformativa/AreaInformativaModule/Categoria.module';
 import { Ganadero } from './ganaderia/ganaderiaEntities/ganadero.entity';
 import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
+import { CreditoModule } from './credito/creditoModule/credito.module';
+import { EnviosModule } from './ganaderia/ganaderiaModule/envios.module';
+import { Envios } from './ganaderia/ganaderiaEntities/envios.entity';
+import { patchAfiliado } from './afiliados/afiliadosEntities/patchAfiliado.entity';
+import { PagoPsa } from './psa/psaEntities/pago_psa.entity';
+import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
+import { Usuario } from './auth/loginEntities/login.entity';
+import { LoginModule } from './auth/loginModule/login.module';
+import { UploadModule } from './pre-registro/pre-registro.module';
+
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Carga las variables de entorno del archivo .env
+    // Configura ConfigModule para que sea global
+    ConfigModule.forRoot({
+      isGlobal: true, // Esto permite que el ConfigService esté disponible en todos los módulos sin tener que importarlo cada vez
+    }),
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'junction.proxy.rlwy.net',
@@ -60,10 +75,14 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
         AreaInformativa,
         TipoGarantia,
         Ganadero,
-        FuenteFondos
+        Envios,
+        FuenteFondos,
+        patchAfiliado,
+        PagoPsa,
+        Usuario
       ],
-      synchronize: false, 
-
+      synchronize: false,
+      logging: false,
     }),
 
     // Importación de otros módulos
@@ -82,13 +101,16 @@ import { GanaderoModule } from './ganaderia/ganaderiaModule/ganadero.module';
     AfiliadosModule,
     AreaInformativaModule,
     GanaderoModule,
-    CategoriaModule],
-  
+    EnviosModule,
+    CreditoModule,
+    CategoriaModule,
+    PatchAfiliadoModule,
+    PagoPsaModule,
+    LoginModule,
+    UploadModule
+  ],
+
   controllers: [],
   providers: [],
 })
-export class AppModule {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY); // Configura la API Key de SendGrid
-  }
-}
+export class AppModule {}

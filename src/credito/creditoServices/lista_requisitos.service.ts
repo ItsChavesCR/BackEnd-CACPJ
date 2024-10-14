@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ListaRequisitos } from '../CreditoEntities/lista_requisitos.entity';
@@ -21,10 +21,17 @@ export class ListaRequisitosService {
             throw new NotFoundException('Tipo de crédito no encontrado');
         }
 
+        // Validación adicional para asegurarse de que la descripción no esté vacía o mal formada
+        if (!createDto.Descripcion || !Array.isArray(createDto.Descripcion) || createDto.Descripcion.length === 0) {
+            throw new BadRequestException('La descripción no puede estar vacía');
+        }
+
         const newRequisito = this.listaRequisitosRepository.create({
             Descripcion: JSON.stringify(createDto.Descripcion),  // Convierte array a JSON string
             tipoCredito: tipoCredito,  // Asigna el objeto de tipo crédito
         });
+
+        console.log('Datos a guardar:', newRequisito);  // Debug log
 
         return this.listaRequisitosRepository.save(newRequisito);
     }
@@ -32,10 +39,10 @@ export class ListaRequisitosService {
     async getListaRequisitos(): Promise<ListaRequisitos[]> {
         const requisitos = await this.listaRequisitosRepository.find({ relations: ['tipoCredito'] });
 
-        // Convertir el string JSON de la descripción a un array de strings
+        // Convertir el string JSON de la descripción a un array de strings, y manejar caso de nulo
         return requisitos.map(requisito => ({
             ...requisito,
-            Descripcion: JSON.parse(requisito.Descripcion),  // Convierte JSON string a array
+            Descripcion: requisito.Descripcion ? JSON.parse(requisito.Descripcion) : [],  // Verifica si el campo está vacío
         }));
     }
 
@@ -49,7 +56,7 @@ export class ListaRequisitosService {
             throw new NotFoundException('Requisito no encontrado');
         }
 
-        requisito.Descripcion = JSON.parse(requisito.Descripcion);  // Convierte JSON string a array
+        requisito.Descripcion = requisito.Descripcion ? JSON.parse(requisito.Descripcion) : [];  // Verifica si el campo está vacío
         return requisito;
     }
 
@@ -69,7 +76,7 @@ export class ListaRequisitosService {
         // Verifica y actualiza el tipo de crédito
         if (updateDto.tipoCreditoId) {
             const tipoCredito = await this.tipoCreditoRepository.findOne({
-                where: { Id_TipoCredito: updateDto.tipoCreditoId },  // Cambiado a un objeto de búsqueda
+                where: { Id_TipoCredito: updateDto.tipoCreditoId },
             });
             if (!tipoCredito) {
                 throw new NotFoundException('Tipo de crédito no encontrado');
@@ -79,12 +86,12 @@ export class ListaRequisitosService {
     
         // Verifica y convierte la descripción si fue actualizada
         if (updateDto.Descripcion) {
-            console.log('Antes de convertir:', updateDto.Descripcion); // Verificar el contenido
+            console.log('Actualizando la descripción:', updateDto.Descripcion);  // Debug log
             requisito.Descripcion = JSON.stringify(updateDto.Descripcion);  // Convierte array a JSON string
+        } else {
+            console.log('Manteniendo la descripción existente');  // Debug log
         }
     
-        // Elimina el Object.assign para actualizar campos de forma específica
         return this.listaRequisitosRepository.save(requisito);
-    } 
-    
+    }
 }
