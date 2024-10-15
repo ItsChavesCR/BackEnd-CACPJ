@@ -5,6 +5,7 @@ import { Psa } from '../psaEntities/Psa.entity';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
 import { UpdatePsaDto } from '../psaDto/update-Psa.dto';
+import { PagoPsa } from '../psaEntities/pago_psa.entity';
 
 
 const PDFDocument = require('pdfkit-table');
@@ -15,6 +16,15 @@ export class PsaService {
     @InjectRepository(Psa) private psaRepository: Repository<Psa>,
     @InjectRepository(Modalidad) private modalidadRepository: Repository<Modalidad>,
   ) { }
+
+
+   // Método para mapear los pagos a solo mostrar Numero_Pago y Fecha_Pago
+   private mapearPagos(pagos: PagoPsa[]): { Numero_Pago: number, Fecha_Pago: Date }[] {
+    return pagos.map(pago => ({
+      Numero_Pago: pago.Numero_Pago,
+      Fecha_Pago: pago.Fecha_Pago,
+    }));
+  }
 
   async createPsa(createDto: CreatePsaDto): Promise<Psa> {
     // Validar que la cédula tenga 9 dígitos
@@ -42,20 +52,24 @@ export class PsaService {
     return this.psaRepository.save(newPsa);
   }
 
-  async getPsaById(id: number): Promise<Psa> {
+  async getPsaById(id: number): Promise<any> {
     const psa = await this.psaRepository.findOne({
       where: { Id_Psa: id },
       relations: ['modalidad', 'pagos'],  // Cargar la modalidad y los pagos
     });
-  
+
     if (!psa) {
       throw new NotFoundException('PSA not found');
     }
-  
-    return psa;  // Retorna el PSA con los pagos incluidos
+
+    return {
+      nombre: psa.Nombre_Completo,
+      modalidad: psa.modalidad ? psa.modalidad.Nombre_Modalidad : null,
+      pagos: this.mapearPagos(psa.pagos),  // Usar el método para mapear los pagos
+    };
   }
 
-
+  
   deletePsa(id: number) {
     return this.psaRepository.delete({ Id_Psa: id });
   }
@@ -78,28 +92,32 @@ export class PsaService {
     return this.psaRepository.save(psa);
   }
 
-  async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<Psa[]> {
+  // Otros métodos que necesiten los pagos solo con Numero_Pago y Fecha_Pago
+  async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<any[]> {
     const query = this.psaRepository.createQueryBuilder('psa')
-      .leftJoinAndSelect('psa.modalidad', 'modalidad')  // Relacionamos la modalidad
-      .leftJoinAndSelect('psa.pagos', 'pagos');  //Relacionamos el pago
+      .leftJoinAndSelect('psa.modalidad', 'modalidad')
+      .leftJoinAndSelect('psa.pagos', 'pagos');
 
-    // Filtro por cédula
     if (cedula) {
       query.andWhere('psa.Cedula = :cedula', { cedula });
     }
 
-    // Filtro por año de ingreso
     if (anoIngreso) {
       query.andWhere('psa.Año_Ingreso = :anoIngreso', { anoIngreso });
     }
 
-    // Filtro por modalidad
     if (modalidad) {
       query.andWhere('modalidad.Nombre_Modalidad = :modalidad', { modalidad });
     }
 
-    // Ejecutamos la consulta
-    return await query.getMany();
+    const psas = await query.getMany();
+
+    // Mapear los pagos en cada PSA
+    return psas.map(psa => ({
+      nombre: psa.Nombre_Completo,
+      modalidad: psa.modalidad ? psa.modalidad.Nombre_Modalidad : null,
+      pagos: this.mapearPagos(psa.pagos),
+    }));
   }
 
   // Método para generar PDF de PSA con filtros

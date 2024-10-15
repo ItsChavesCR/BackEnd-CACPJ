@@ -7,9 +7,9 @@ export class FAQsAi {
     @PrimaryGeneratedColumn()
     Id_Pregunta: number;
 
-    @Column('text')
+    @Column({ type: 'varchar', length: 255, nullable: false })
     Pregunta: string;
 
-    @Column('text')
+   @Column({ type: 'varchar', length: 255, nullable: false })
     Respuesta: string;
 }
