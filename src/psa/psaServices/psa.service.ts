@@ -6,6 +6,7 @@ import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
 import { UpdatePsaDto } from '../psaDto/update-Psa.dto';
 import { PagoPsa } from '../psaEntities/pago_psa.entity';
+import { PsaConPagos } from '../psaDto/psa.dto';
 
 
 const PDFDocument = require('pdfkit-table');
@@ -92,34 +93,28 @@ export class PsaService {
     return this.psaRepository.save(psa);
   }
 
-  // Otros métodos que necesiten los pagos solo con Numero_Pago y Fecha_Pago
-  async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<any[]> {
+  
+  async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<Psa[]> {
     const query = this.psaRepository.createQueryBuilder('psa')
       .leftJoinAndSelect('psa.modalidad', 'modalidad')
       .leftJoinAndSelect('psa.pagos', 'pagos');
-
+  
     if (cedula) {
       query.andWhere('psa.Cedula = :cedula', { cedula });
     }
-
+  
     if (anoIngreso) {
       query.andWhere('psa.Año_Ingreso = :anoIngreso', { anoIngreso });
     }
-
+  
     if (modalidad) {
       query.andWhere('modalidad.Nombre_Modalidad = :modalidad', { modalidad });
     }
-
-    const psas = await query.getMany();
-
-    // Mapear los pagos en cada PSA
-    return psas.map(psa => ({
-      nombre: psa.Nombre_Completo,
-      modalidad: psa.modalidad ? psa.modalidad.Nombre_Modalidad : null,
-      pagos: this.mapearPagos(psa.pagos),
-    }));
+  
+    // Devuelve el PSA completo sin modificar la estructura del objeto PagoPsa
+    return await query.getMany();
   }
-
+  
   // Método para generar PDF de PSA con filtros
   async generarPDFPsa(filtros: { cedula?: string, anoIngreso?: number, modalidad?: string }): Promise<Buffer> {
     try {
