@@ -4,7 +4,7 @@ export class CreateFAQsDto {
 
     @IsString()
     @IsNotEmpty()
-    Pregunta: string;
+    pregunta: string;
 
     @IsString()
     @IsNotEmpty()
