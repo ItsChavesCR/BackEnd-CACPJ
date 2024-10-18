@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,9 +13,13 @@ export class FAQsAiService {
     constructor(@InjectRepository(FAQsAi) private FAQsRepository: Repository<FAQsAi>) {}
 
     createFAQs(FAQsDto: CreateFAQsDto): Promise<FAQsAi> {
-        const newPregunta = this.FAQsRepository.create(FAQsDto);
+        const newPregunta = this.FAQsRepository.create({
+            Pregunta: FAQsDto.pregunta,
+            Respuesta: FAQsDto.respuesta,
+        });
         return this.FAQsRepository.save(newPregunta);
     }
+    
 
     getFAQs(): Promise<FAQsAi[]> {
         return this.FAQsRepository.find();
