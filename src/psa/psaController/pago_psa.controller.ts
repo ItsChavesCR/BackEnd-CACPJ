@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { PagoPsaService } from '../psaServices/pago_psa.service';
 import { PagoPsa } from '../psaEntities/pago_psa.entity';
 
@@ -26,4 +26,15 @@ export class PagoPsaController {
     async getPagosByIdPsa(@Param('id', ParseIntPipe) idPsa: number): Promise<{ nombre: string, pagos: any[] }> {
         return this.pagoPsaService.getPagosByIdPsa(idPsa);
     }
+
+
+    // Nuevo endpoint para eliminar un pago por su Numero_Pago
+    @Delete(':idPsa/pago/:numeroPago')
+    async eliminarPago(
+        @Param('idPsa', ParseIntPipe) idPsa: number,
+        @Param('numeroPago', ParseIntPipe) numeroPago: number,
+    ): Promise<void> {
+        return this.pagoPsaService.eliminarPago(idPsa, numeroPago);
+    }
 }
+

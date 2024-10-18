@@ -6,8 +6,6 @@ import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
 import { UpdatePsaDto } from '../psaDto/update-Psa.dto';
 import { PagoPsa } from '../psaEntities/pago_psa.entity';
-import { PsaConPagos } from '../psaDto/psa.dto';
-
 
 const PDFDocument = require('pdfkit-table');
 
@@ -63,16 +61,46 @@ export class PsaService {
       throw new NotFoundException('PSA not found');
     }
 
-    return {
-      nombre: psa.Nombre_Completo,
-      modalidad: psa.modalidad ? psa.modalidad.Nombre_Modalidad : null,
-      pagos: this.mapearPagos(psa.pagos),  // Usar el método para mapear los pagos
-    };
+    return psa;
   }
 
+  async deletePsa(id: number): Promise<void> {
+    // Primero, intenta encontrar el PSA que se quiere eliminar
+    const psa = await this.psaRepository.findOne({ where: { Id_Psa: id } });
   
-  deletePsa(id: number) {
-    return this.psaRepository.delete({ Id_Psa: id });
+    if (!psa) {
+      throw new NotFoundException(`PSA con ID ${id} no encontrado`);
+    }
+  
+    // Eliminar el PSA encontrado
+    await this.psaRepository.delete(id);
+  
+    // Verificar si quedan más registros
+    const remainingPsas = await this.psaRepository.find();
+  
+    if (remainingPsas.length === 0) {
+      // Si no quedan más registros, reiniciar el auto-incremento
+      await this.psaRepository.query('ALTER TABLE Agregar_Psa AUTO_INCREMENT = 1');
+    }
+  }
+  
+  // Método para reorganizar los IDs de la tabla PSA para eliminar huecos
+  private async reorganizeIds(): Promise<void> {
+    const psas = await this.psaRepository.find({ order: { Id_Psa: 'ASC' } });
+
+    for (let i = 0; i < psas.length; i++) {
+      const currentPsa = psas[i];
+
+      // Si el ID actual no es igual al índice + 1, lo actualizamos
+      const expectedId = i + 1;
+      if (currentPsa.Id_Psa !== expectedId) {
+        await this.psaRepository.update(currentPsa.Id_Psa, { Id_Psa: expectedId });
+      }
+    }
+
+    // Reinicia el auto-incremento al valor correcto después de reorganizar
+    const nextAutoIncrement = psas.length + 1;
+    await this.psaRepository.query(`ALTER TABLE psa AUTO_INCREMENT = ${nextAutoIncrement}`);
   }
 
   async updatePsa(id: number, updateDto: UpdatePsaDto) {
