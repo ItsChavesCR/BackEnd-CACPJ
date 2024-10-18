@@ -8,56 +8,57 @@ import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 
 @Controller('psa')
 export class PsaController {
-    constructor(private readonly psaService: PsaService) { }
+  constructor(private readonly psaService: PsaService) { }
 
-    @Get()
-    getPsa(
-        @Query('cedula') cedula?: string,
-        @Query('anoIngreso') anoIngreso?: number,
-        @Query('modalidad') modalidad?: string
-    ): Promise<Psa[]> {
-        return this.psaService.getPsaWithFilters(cedula, anoIngreso, modalidad);
-    }
+  @Get()
+  getPsa(
+    @Query('cedula') cedula?: string,
+    @Query('anoIngreso') anoIngreso?: number,
+    @Query('modalidad') modalidad?: string
+  ): Promise<Psa[]> {
+    return this.psaService.getPsaWithFilters(cedula, anoIngreso, modalidad);
+  }
 
-    @Get(':id')
-    getPsaById(@Param('id', ParseIntPipe) id: number): Promise<Psa> {
-        return this.psaService.getPsaById(id);
-    }
+  @Get(':id')
+  getPsaById(@Param('id', ParseIntPipe) id: number): Promise<Psa> {
+    return this.psaService.getPsaById(id);
+  }
 
-    @Post()
+  @Post()
   async createPsa(@Body() createPsaDto: CreatePsaDto): Promise<Psa> {
     return this.psaService.createPsa(createPsaDto);
   }
 
-    @Delete(':id')
-    delete(@Param('id', ParseIntPipe) id: number) {
-        return this.psaService.deletePsa(id);
-    }
+  @Delete(':id')
+  async deletePsa(@Param('id', ParseIntPipe) id: number) {
+    return this.psaService.deletePsa(id);
+  }
 
-    @Patch(':id')
-    updatePsa(@Param('id', ParseIntPipe) id: number, @Body() updateDto: CreatePsaDto) {
-        return this.psaService.updatePsa(id, updateDto);
-    }
 
-    @Get('GenerarPsaPDF/descargar')
-    async downloadPDF(
-        @Query('anoIngreso') anoIngreso: number,
-        @Query('modalidad') modalidad: string,
-        @Query('cedula') cedula: string,
-        @Res() res
-    ): Promise<void> {
-        const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula });
+  @Patch(':id')
+  updatePsa(@Param('id', ParseIntPipe) id: number, @Body() updateDto: CreatePsaDto) {
+    return this.psaService.updatePsa(id, updateDto);
+  }
 
-        res.set({
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename=psa_reporte.pdf',
-            'Content-Length': buffer.length,
-        });
+  @Get('GenerarPsaPDF/descargar')
+  async downloadPDF(
+    @Query('anoIngreso') anoIngreso: number,
+    @Query('modalidad') modalidad: string,
+    @Query('cedula') cedula: string,
+    @Res() res
+  ): Promise<void> {
+    const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula });
 
-        res.end(buffer);
-    }
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=psa_reporte.pdf',
+      'Content-Length': buffer.length,
+    });
 
-    @Get('historial/cedula/:cedula')
+    res.end(buffer);
+  }
+
+  @Get('historial/cedula/:cedula')
   async obtenerHistorialPorCedula(@Param('cedula') cedula: string): Promise<{ año: number, modalidad: string }[]> {
     const historial = await this.psaService.obtenerHistorialPorCedula(cedula);
 

@@ -5,7 +5,7 @@ import { Psa } from '../psaEntities/Psa.entity';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
 import { Modalidad } from '../psaEntities/modalidad.entity';
 import { UpdatePsaDto } from '../psaDto/update-Psa.dto';
-
+import { PagoPsa } from '../psaEntities/pago_psa.entity';
 
 const PDFDocument = require('pdfkit-table');
 
@@ -15,6 +15,15 @@ export class PsaService {
     @InjectRepository(Psa) private psaRepository: Repository<Psa>,
     @InjectRepository(Modalidad) private modalidadRepository: Repository<Modalidad>,
   ) { }
+
+
+   // Método para mapear los pagos a solo mostrar Numero_Pago y Fecha_Pago
+   private mapearPagos(pagos: PagoPsa[]): { Numero_Pago: number, Fecha_Pago: Date }[] {
+    return pagos.map(pago => ({
+      Numero_Pago: pago.Numero_Pago,
+      Fecha_Pago: pago.Fecha_Pago,
+    }));
+  }
 
   async createPsa(createDto: CreatePsaDto): Promise<Psa> {
     // Validar que la cédula tenga 9 dígitos
@@ -42,22 +51,56 @@ export class PsaService {
     return this.psaRepository.save(newPsa);
   }
 
-  async getPsaById(id: number): Promise<Psa> {
+  async getPsaById(id: number): Promise<any> {
     const psa = await this.psaRepository.findOne({
       where: { Id_Psa: id },
       relations: ['modalidad', 'pagos'],  // Cargar la modalidad y los pagos
     });
-  
+
     if (!psa) {
       throw new NotFoundException('PSA not found');
     }
-  
-    return psa;  // Retorna el PSA con los pagos incluidos
+
+    return psa;
   }
 
+  async deletePsa(id: number): Promise<void> {
+    // Primero, intenta encontrar el PSA que se quiere eliminar
+    const psa = await this.psaRepository.findOne({ where: { Id_Psa: id } });
+  
+    if (!psa) {
+      throw new NotFoundException(`PSA con ID ${id} no encontrado`);
+    }
+  
+    // Eliminar el PSA encontrado
+    await this.psaRepository.delete(id);
+  
+    // Verificar si quedan más registros
+    const remainingPsas = await this.psaRepository.find();
+  
+    if (remainingPsas.length === 0) {
+      // Si no quedan más registros, reiniciar el auto-incremento
+      await this.psaRepository.query('ALTER TABLE Agregar_Psa AUTO_INCREMENT = 1');
+    }
+  }
+  
+  // Método para reorganizar los IDs de la tabla PSA para eliminar huecos
+  private async reorganizeIds(): Promise<void> {
+    const psas = await this.psaRepository.find({ order: { Id_Psa: 'ASC' } });
 
-  deletePsa(id: number) {
-    return this.psaRepository.delete({ Id_Psa: id });
+    for (let i = 0; i < psas.length; i++) {
+      const currentPsa = psas[i];
+
+      // Si el ID actual no es igual al índice + 1, lo actualizamos
+      const expectedId = i + 1;
+      if (currentPsa.Id_Psa !== expectedId) {
+        await this.psaRepository.update(currentPsa.Id_Psa, { Id_Psa: expectedId });
+      }
+    }
+
+    // Reinicia el auto-incremento al valor correcto después de reorganizar
+    const nextAutoIncrement = psas.length + 1;
+    await this.psaRepository.query(`ALTER TABLE psa AUTO_INCREMENT = ${nextAutoIncrement}`);
   }
 
   async updatePsa(id: number, updateDto: UpdatePsaDto) {
@@ -78,30 +121,28 @@ export class PsaService {
     return this.psaRepository.save(psa);
   }
 
+  
   async getPsaWithFilters(cedula?: string, anoIngreso?: number, modalidad?: string): Promise<Psa[]> {
     const query = this.psaRepository.createQueryBuilder('psa')
-      .leftJoinAndSelect('psa.modalidad', 'modalidad')  // Relacionamos la modalidad
-      .leftJoinAndSelect('psa.pagos', 'pagos');  //Relacionamos el pago
-
-    // Filtro por cédula
+      .leftJoinAndSelect('psa.modalidad', 'modalidad')
+      .leftJoinAndSelect('psa.pagos', 'pagos');
+  
     if (cedula) {
       query.andWhere('psa.Cedula = :cedula', { cedula });
     }
-
-    // Filtro por año de ingreso
+  
     if (anoIngreso) {
       query.andWhere('psa.Año_Ingreso = :anoIngreso', { anoIngreso });
     }
-
-    // Filtro por modalidad
+  
     if (modalidad) {
       query.andWhere('modalidad.Nombre_Modalidad = :modalidad', { modalidad });
     }
-
-    // Ejecutamos la consulta
+  
+    // Devuelve el PSA completo sin modificar la estructura del objeto PagoPsa
     return await query.getMany();
   }
-
+  
   // Método para generar PDF de PSA con filtros
   async generarPDFPsa(filtros: { cedula?: string, anoIngreso?: number, modalidad?: string }): Promise<Buffer> {
     try {
