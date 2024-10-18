@@ -8,5 +8,6 @@ export class CreateFAQsDto {
 
     @IsString()
     @IsNotEmpty()
-    Respuesta: string;
+    respuesta: string;
+
 }

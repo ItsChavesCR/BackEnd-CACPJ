@@ -20,9 +20,10 @@ export class FAQsController {
     }
 
     @Post()
-    create(@Body() createDto: CreateFAQsDto): Promise<FAQsAi> {
-        return this.fAQsService.createFAQs(createDto);
-    }
+create(@Body() createDto: CreateFAQsDto): Promise<FAQsAi> {
+    return this.fAQsService.createFAQs(createDto);
+}
+
 
     @Delete(':id')
     delete(@Param('id', ParseIntPipe) id: number) {

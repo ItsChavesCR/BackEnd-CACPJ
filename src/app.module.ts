@@ -81,7 +81,7 @@ import { UploadModule } from './pre-registro/pre-registro.module';
         PagoPsa,
         Usuario
       ],
-      synchronize: false,
+      synchronize: true,
       logging: false,
     }),
 
