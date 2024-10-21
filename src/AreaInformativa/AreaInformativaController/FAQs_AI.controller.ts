@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe } from '@nestjs/common';
 import { FAQsAiService } from '../AreaInformativaServices/FAQs_AI.service';
 import { FAQsAi } from '../AreaInformativaEntities/FAQs_AI.entity';
@@ -31,7 +33,10 @@ create(@Body() createDto: CreateFAQsDto): Promise<FAQsAi> {
     }
 
     @Patch(':id')
-    updateFAQs(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateFAQsDto) {
-        return this.fAQsService.updateFAQs(id, updateDto);
-    }
+    async updateFaq(
+        @Param('id') id: number, // El ID de la pregunta se pasa en la URL
+        @Body() updateFaqDto: UpdateFAQsDto, // Solo el contenido que se quiere actualizar
+      ) {
+        return this.fAQsService.updateFAQs(id, updateFaqDto);
+      }
 }
