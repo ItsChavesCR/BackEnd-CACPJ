@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { Usuario } from '../loginEntities/login.entity';
 import { LoginDto } from '../loginDto/login.dto';
 import { ChangePasswordDto } from '../loginDto/change-password.dto';
+import { ChangePasswordRecoveryDto } from '../loginDto/change-password-recovery.dto'; // DTO para el cambio con código de recuperación
 import * as nodemailer from 'nodemailer';  // Para enviar correos
 
 @Injectable()
@@ -29,14 +30,14 @@ export class LoginService {
   });
 
   // Enviar código de recuperación por correo electrónico
-  async sendRecoveryCode(emailOrPhone: string, method: 'email') {  // Solo 'email' ya que eliminamos 'sms'
+  async sendRecoveryCode(emailOrPhone: string, method: 'email') {  
     const code = Math.floor(100000 + Math.random() * 900000).toString();  // Genera un código aleatorio de 6 dígitos
     this.recoveryCodes.set(emailOrPhone, code);  // Guardar el código temporalmente
 
     // Enviar código por correo electrónico
     const mailOptions = {
-      from: '"Soporte CACPJ" <centroagricolajicaral@gmail.com>',  // Usando el nuevo correo
-      to: emailOrPhone,  // Enviar al correo ingresado por el usuario
+      from: '"Soporte CACPJ" <centroagricolajicaral@gmail.com>',  
+      to: emailOrPhone,  
       subject: 'Código de Recuperación de Contraseña',
       text: `Tu código de recuperación es: ${code}`,
     };
@@ -57,22 +58,21 @@ export class LoginService {
   }
 
   // Cambiar la contraseña utilizando el código de recuperación
-  async changePasswordUsingCode(changePasswordDto: ChangePasswordDto) {
-    const { currentPassword, newPassword } = changePasswordDto;
+  async changePasswordUsingCode(changePasswordDto: ChangePasswordRecoveryDto) {
+    const { recoveryCode, newPassword, area } = changePasswordDto; 
 
-    // Buscar al usuario por el código de recuperación (currentPassword es en realidad el código de recuperación)
-    const areaCorrespondiente = Array.from(this.recoveryCodes.entries()).find(([area, code]) => code === currentPassword);
+    // Verificamos que el código de recuperación sea válido
+    const validCode = Array.from(this.recoveryCodes.values()).includes(recoveryCode);
 
-    if (!areaCorrespondiente) {
+    if (!validCode) {
       throw new UnauthorizedException('Código de recuperación no encontrado o ha expirado');
     }
 
-    const [userArea] = areaCorrespondiente;  // Obtener el área del usuario a partir del código de recuperación
-
-    const usuarioEncontrado = await this.userRepository.findOne({ where: { area: userArea } });
+    // Verificamos que el área ingresada existe en la base de datos
+    const usuarioEncontrado = await this.userRepository.findOne({ where: { area } });
 
     if (!usuarioEncontrado) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Área no encontrada');
     }
 
     // Cambiar la contraseña del usuario encontrado
@@ -80,7 +80,9 @@ export class LoginService {
     usuarioEncontrado.password = hashedPassword;
     await this.userRepository.save(usuarioEncontrado);
 
-    this.recoveryCodes.delete(userArea);  // Eliminar el código utilizado
+    // Eliminar el código de recuperación después del uso
+    this.recoveryCodes.delete(recoveryCode);
+
     return { message: 'Contraseña cambiada exitosamente' };
   }
 
@@ -89,10 +91,6 @@ export class LoginService {
     const user = await this.userRepository.findOne({ where: { area } });
 
     if (!user) {
-      throw new UnauthorizedException('Área incorrecta');
-    }
-
-    if (user.area.trim().toLowerCase() !== area.trim().toLowerCase()) {
       throw new UnauthorizedException('Área incorrecta');
     }
 
@@ -120,7 +118,7 @@ export class LoginService {
     };
   }
 
-  // Método para cambiar la contraseña
+  // Método para cambiar la contraseña (cuando el usuario está autenticado)
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
     const { currentPassword, newPassword } = changePasswordDto;
 
@@ -135,12 +133,7 @@ export class LoginService {
       throw new UnauthorizedException('La contraseña actual no es correcta');
     }
 
-    if (currentPassword === newPassword) {
-      throw new BadRequestException('La nueva contraseña no puede ser igual a la actual');
-    }
-
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
     user.password = hashedPassword;
     await this.userRepository.save(user);
 
