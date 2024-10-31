@@ -7,38 +7,100 @@ import { Repository } from 'typeorm';
 import { Usuario } from '../loginEntities/login.entity';
 import { LoginDto } from '../loginDto/login.dto';
 import { ChangePasswordDto } from '../loginDto/change-password.dto';
+import { ChangePasswordRecoveryDto } from '../loginDto/change-password-recovery.dto'; // DTO para el cambio con código de recuperación
+import * as nodemailer from 'nodemailer';  // Para enviar correos
 
 @Injectable()
 export class LoginService {
+  private recoveryCodes: Map<string, string> = new Map();  // Almacena temporalmente los códigos de recuperación
+
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(Usuario)
     private readonly userRepository: Repository<Usuario>, 
   ) {}
 
+  // Configuración de Nodemailer para enviar correos
+  private transporter = nodemailer.createTransport({
+    service: 'gmail',  // Gmail como proveedor de correo
+    auth: {
+      user: process.env.EMAIL_USER,  // Usando la variable de entorno con el nuevo correo
+      pass: process.env.EMAIL_PASS,  // Usando la variable de entorno con la nueva contraseña
+    },
+  });
+
+  // Enviar código de recuperación por correo electrónico
+  async sendRecoveryCode(emailOrPhone: string, method: 'email') {  
+    const code = Math.floor(100000 + Math.random() * 900000).toString();  // Genera un código aleatorio de 6 dígitos
+    this.recoveryCodes.set(emailOrPhone, code);  // Guardar el código temporalmente
+
+    // Enviar código por correo electrónico
+    const mailOptions = {
+      from: '"Soporte CACPJ" <centroagricolajicaral@gmail.com>',  
+      to: emailOrPhone,  
+      subject: 'Código de Recuperación de Contraseña',
+      text: `Tu código de recuperación es: ${code}`,
+    };
+
+    await this.transporter.sendMail(mailOptions);
+    console.log(`Código de recuperación enviado por correo: ${code}`);
+
+    return { message: `Código enviado por ${method}` };
+  }
+
+  // Validar el código de recuperación
+  async validateRecoveryCode(code: string): Promise<boolean> {
+    const validCode = Array.from(this.recoveryCodes.values()).includes(code);
+    if (!validCode) {
+      throw new UnauthorizedException('Código inválido o ha expirado');
+    }
+    return true;
+  }
+
+  // Cambiar la contraseña utilizando el código de recuperación
+  async changePasswordUsingCode(changePasswordDto: ChangePasswordRecoveryDto) {
+    const { recoveryCode, newPassword, area } = changePasswordDto; 
+
+    // Verificamos que el código de recuperación sea válido
+    const validCode = Array.from(this.recoveryCodes.values()).includes(recoveryCode);
+
+    if (!validCode) {
+      throw new UnauthorizedException('Código de recuperación no encontrado o ha expirado');
+    }
+
+    // Verificamos que el área ingresada existe en la base de datos
+    const usuarioEncontrado = await this.userRepository.findOne({ where: { area } });
+
+    if (!usuarioEncontrado) {
+      throw new UnauthorizedException('Área no encontrada');
+    }
+
+    // Cambiar la contraseña del usuario encontrado
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    usuarioEncontrado.password = hashedPassword;
+    await this.userRepository.save(usuarioEncontrado);
+
+    // Eliminar el código de recuperación después del uso
+    this.recoveryCodes.delete(recoveryCode);
+
+    return { message: 'Contraseña cambiada exitosamente' };
+  }
+
   // Método para validar un usuario con área y contraseña
   async validateUser(area: string, password: string): Promise<any> {
-    // Buscar el usuario por área exactamente como se pasa
     const user = await this.userRepository.findOne({ where: { area } });
 
     if (!user) {
-      throw new UnauthorizedException('Área incorrecta'); // Lanzar excepción si el área no coincide
+      throw new UnauthorizedException('Área incorrecta');
     }
 
-    // Validación estricta del área: comparar sin espacios ni diferencias de mayúsculas/minúsculas
-    if (user.area.trim().toLowerCase() !== area.trim().toLowerCase()) {
-      throw new UnauthorizedException('Área incorrecta'); // Si el área no coincide exactamente, retornar null
-    }
-
-    // Verificar la contraseña
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('La contraseña es incorrecta'); // Si la contraseña no coincide, retornar null
+      throw new UnauthorizedException('La contraseña es incorrecta');
     }
 
-    // Eliminamos el campo password del objeto retornado
     const { password: _, ...result } = user;
-    return result; // Retornar el usuario si todo es válido
+    return result;
   }
 
   // Método para el login
@@ -56,7 +118,7 @@ export class LoginService {
     };
   }
 
-  // Método para cambiar la contraseña
+  // Método para cambiar la contraseña (cuando el usuario está autenticado)
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
     const { currentPassword, newPassword } = changePasswordDto;
 
@@ -71,12 +133,7 @@ export class LoginService {
       throw new UnauthorizedException('La contraseña actual no es correcta');
     }
 
-    if (currentPassword === newPassword) {
-      throw new BadRequestException('La nueva contraseña no puede ser igual a la actual');
-    }    
-
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
     user.password = hashedPassword;
     await this.userRepository.save(user);
 
@@ -85,7 +142,7 @@ export class LoginService {
 
   // Método para obtener todas las áreas de los usuarios
   async getAllAreas() {
-    const users = await this.userRepository.find({ select: ['area'] }); // Solo seleccionamos las áreas
+    const users = await this.userRepository.find({ select: ['area'] });
     return users;
   }
 }

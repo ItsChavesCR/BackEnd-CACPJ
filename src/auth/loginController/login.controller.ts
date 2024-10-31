@@ -1,10 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { Controller, Post, Body, UseGuards, Get, Put, Request } from '@nestjs/common';
+/* eslint-disable prettier/prettier */ 
+import { Controller, Post, Body, UseGuards, Get, Put, Request, UnauthorizedException } from '@nestjs/common';
 import { LoginService } from '../loginService/login.service';
 import { LoginDto } from '../loginDto/login.dto';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import { ChangePasswordDto } from '../loginDto/change-password.dto';
-
+import { ChangePasswordRecoveryDto } from '../loginDto/change-password-recovery.dto'; // DTO para recuperación
+import { SendRecoveryCodeDto } from '../loginDto/send-recovery-code.dto';  
+import { ValidateCodeDto } from '../loginDto/validate-code.dto';  
 
 @Controller('auth')
 export class LoginController {
@@ -15,8 +17,8 @@ export class LoginController {
     return this.authService.login(loginDto);
   }
 
-  @Get('protected')  // Esta es una ruta protegida
-  @UseGuards(JwtAuthGuard)  // Aplicamos el guard para protegerla
+  @Get('protected')  
+  @UseGuards(JwtAuthGuard)  
   getProtectedResource() {
     return { message: 'Accediste a una ruta protegida!' };
   }
@@ -28,10 +30,30 @@ export class LoginController {
     return this.authService.changePassword(userId, changePasswordDto);
   }
 
-  // Nuevo endpoint para obtener las áreas de los usuarios
   @Get('usuarios')
   async getAllAreas() {
-    return this.authService.getAllAreas(); // Llama a un método en el servicio
+    return this.authService.getAllAreas(); 
+  }
+
+  @Post('send-recovery-code')
+  async sendRecoveryCode(@Body() sendRecoveryCodeDto: SendRecoveryCodeDto) {
+    return this.authService.sendRecoveryCode(
+      sendRecoveryCodeDto.emailOrPhone,  
+      'email' 
+    );
+  }
+
+  @Post('validate-recovery-code')
+  async validateRecoveryCode(@Body() validateCodeDto: ValidateCodeDto) {
+    const isValid = await this.authService.validateRecoveryCode(validateCodeDto.code);
+    if (!isValid) {
+      throw new UnauthorizedException('Código inválido o ha expirado');
+    }
+    return { message: 'Código válido' };
+  }
+
+  @Put('change-password-code')
+  async changePasswordUsingCode(@Body() changePasswordDto: ChangePasswordRecoveryDto) {
+    return this.authService.changePasswordUsingCode(changePasswordDto);
   }
 }
-

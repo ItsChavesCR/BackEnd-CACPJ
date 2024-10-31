@@ -1,5 +1,11 @@
+/* eslint-disable prettier/prettier */
+import { IsString } from "class-validator";
+
 export class UpdateFAQsDto {
-    Id_Pregunta?: number;
-    pregunta?: string;
-    respuesta?: string;
+
+    @IsString()
+    Pregunta: string;
+
+    @IsString()
+    Respuesta: string;
 }

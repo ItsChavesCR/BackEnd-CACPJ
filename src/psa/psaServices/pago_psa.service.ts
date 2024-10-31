@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PagoPsa } from '../psaEntities/pago_psa.entity';
 import { Psa } from '../psaEntities/Psa.entity';
+import { PagoPsaResponseDto } from '../psaDto/get-pagoPsa.dto';
 
 
 @Injectable()
@@ -42,37 +43,74 @@ export class PagoPsaService {
   }
   
 
-  // Obtener los pagos realizados por cédula
-  async getPagosByCedula(cedula: string): Promise<{ nombre: string, pagos: PagoPsa[] }> {
+  async getPagosByCedula(cedula: string): Promise<{ nombre: string, pagos: PagoPsaResponseDto[] }> {
     const psa = await this.psaRepository.findOne({
       where: { Cedula: cedula },
       relations: ['pagos'],
     });
-
+  
     if (!psa) {
       throw new NotFoundException(`No se encontró PSA asociado a la cédula ${cedula}`);
     }
-
+  
+    // Mapear los pagos a PagoPsaResponseDto
+    const pagos = psa.pagos.map(pago => ({
+      Numero_Pago: pago.Numero_Pago,
+      Fecha_Pago: pago.Fecha_Pago,
+    }));
+  
     return {
       nombre: psa.Nombre_Completo,
-      pagos: psa.pagos,
+      pagos: pagos,
     };
   }
-
-  // Obtener los pagos realizados por ID de PSA
-  async getPagosByIdPsa(idPsa: number): Promise<{ nombre: string, pagos: PagoPsa[] }> {
+  
+  async getPagosByIdPsa(idPsa: number): Promise<{ nombre: string, pagos: PagoPsaResponseDto[] }> {
     const psa = await this.psaRepository.findOne({
       where: { Id_Psa: idPsa },
       relations: ['pagos'],
     });
-
+  
     if (!psa) {
       throw new NotFoundException(`No se encontró PSA con el ID ${idPsa}`);
     }
-
+  
+    // Mapear los pagos a PagoPsaResponseDto
+    const pagos = psa.pagos.map(pago => ({
+      Numero_Pago: pago.Numero_Pago,
+      Fecha_Pago: pago.Fecha_Pago,
+    }));
+  
     return {
       nombre: psa.Nombre_Completo,
-      pagos: psa.pagos,
+      pagos: pagos,
     };
   }
+  
+   // Método para eliminar un pago
+   async eliminarPago(idPsa: number, numeroPago: number): Promise<void> {
+    // Primero, busca el pago a eliminar
+    const pago = await this.pagoPsaRepository.findOne({
+      where: { psa: { Id_Psa: idPsa }, Numero_Pago: numeroPago },
+    });
+  
+    if (!pago) {
+      throw new NotFoundException(`No se encontró el pago con el número ${numeroPago} para el PSA ${idPsa}`);
+    }
+  
+    // Eliminar el pago
+    await this.pagoPsaRepository.remove(pago);
+  
+    // Verificar si quedan más pagos para ese PSA
+    const remainingPagos = await this.pagoPsaRepository.find({
+      where: { psa: { Id_Psa: idPsa } },
+    });
+  
+    if (remainingPagos.length === 0) {
+      // Si no quedan más pagos, reiniciar el auto-incremento
+      await this.pagoPsaRepository.query('ALTER TABLE pagos_psa AUTO_INCREMENT = 1');
+    }
+  }
+  
+
 }
