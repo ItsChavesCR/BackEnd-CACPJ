@@ -16,6 +16,7 @@ export class AfiliadosService {
         @InjectRepository(Afiliado) private afiliadosRepository: Repository<Afiliado>,
     ) { }
 
+    // Traer todos los afiliados, tanto activos como inactivos
     getAfiliados() {
         return this.afiliadosRepository.find();
     }
@@ -25,7 +26,7 @@ export class AfiliadosService {
             where: { afiliadoId }
         });
         if (!afiliadoFound) {
-            return new HttpException('User not found', HttpStatus.NOT_FOUND);
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
         return afiliadoFound;
     }
@@ -52,16 +53,39 @@ export class AfiliadosService {
         return result;
     }
 
-    async deleteAfiliado(afiliadoId: number) {
-        const result = await this.afiliadosRepository.delete({ afiliadoId });
-        if (result.affected === 0) {
-            return new HttpException('User not found', HttpStatus.NOT_FOUND);
+    async deactivateAfiliado(afiliadoId: number) {
+        const afiliado = await this.afiliadosRepository.findOne({ where: { afiliadoId } });
+        if (!afiliado) {
+            throw new HttpException('Afiliado no encontrado', HttpStatus.NOT_FOUND);
         }
-        return result;
+        afiliado.isActive = false;
+        return this.afiliadosRepository.save(afiliado);
     }
 
-    async getAfiliadosWithFilters(ubicacion?: string, genero?: string, actividades?: string, comercializa?: boolean): Promise<Afiliado[]> {
+    async reactivateAfiliado(afiliadoId: number) {
+        const afiliado = await this.afiliadosRepository.findOne({ where: { afiliadoId } });
+        if (!afiliado) {
+            throw new HttpException('Afiliado no encontrado', HttpStatus.NOT_FOUND);
+        }
+        afiliado.isActive = true;
+        return this.afiliadosRepository.save(afiliado);
+    }
+
+    async deleteAfiliado(afiliadoId: number) {
+        const afiliado = await this.afiliadosRepository.findOne({ where: { afiliadoId } });
+        if (!afiliado) {
+            throw new HttpException('Afiliado no encontrado', HttpStatus.NOT_FOUND);
+        }
+        return await this.afiliadosRepository.remove(afiliado);
+    }
+
+    // Permitir filtrar por afiliados activos o inactivos
+    async getAfiliadosWithFilters(ubicacion?: string, genero?: string, actividades?: string, comercializa?: boolean, isActive?: boolean): Promise<Afiliado[]> {
         const queryBuilder = this.afiliadosRepository.createQueryBuilder('afiliado');
+
+        if (isActive !== undefined) {
+            queryBuilder.andWhere('afiliado.isActive = :isActive', { isActive });
+        }
         if (ubicacion) {
             queryBuilder.andWhere('afiliado.direccion LIKE :ubicacion', { ubicacion: `%${ubicacion}%` });
         }

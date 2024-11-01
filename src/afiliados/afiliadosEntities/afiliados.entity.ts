@@ -37,5 +37,7 @@ export class Afiliado {
 
     @Column()
     annoNacimiento : number
-    
+
+    @Column({ default: true })  // Asegúrate de que este campo esté definido
+    isActive: boolean;
 }
