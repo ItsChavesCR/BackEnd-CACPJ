@@ -44,6 +44,7 @@ import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
 import { Usuario } from './auth/loginEntities/login.entity';
 import { LoginModule } from './auth/loginModule/login.module';
 import { UploadModule } from './pre-registro/pre-registro.module';
+import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModule/GanaderiaConsultas.module';
 
 
 
@@ -107,7 +108,8 @@ import { UploadModule } from './pre-registro/pre-registro.module';
     PatchAfiliadoModule,
     PagoPsaModule,
     LoginModule,
-    UploadModule
+    UploadModule,
+    GanaderiaConsultasModule
   ],
 
   controllers: [],
