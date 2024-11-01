@@ -24,7 +24,9 @@ export class GanaderoService {
   }
 
   async findAll(): Promise<Ganadero[]> {
-    return this.ganaderoRepository.find({ relations: ['afiliado'] });
+    const ganaderos = await this.ganaderoRepository.find({ relations: ['afiliado'] });
+    // Filtra los ganaderos para incluir solo aquellos cuyo afiliado tiene comercializacion en true
+    return ganaderos.filter(ganadero => ganadero.afiliado.comercializacion);
   }
 
   async findOne(id: number): Promise<Ganadero> {
@@ -38,6 +40,7 @@ export class GanaderoService {
     return ganadero;
   }
 
+  
 
   // async update(id: number, updateGanaderoDto: UpdateGanaderoDto): Promise<Ganadero> {
   //   const ganadero = await this.ganaderoRepository.preload({
