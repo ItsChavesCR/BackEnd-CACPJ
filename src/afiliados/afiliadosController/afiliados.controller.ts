@@ -31,14 +31,31 @@ export class AfiliadosController {
     }
 
     @Delete(':afiliadoId')
-    deleteAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number) {
-        return this.afiliadosService.deleteAfiliado(afiliadoId);
-    }
+   async deleteAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number) {
+    return await this.afiliadosService.deleteAfiliado(afiliadoId);
+}
+
+
+
 
     @Patch(':afiliadoId')
     updateAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number, @Body() afiliado: UpdateAfiliadoDto) {
         return this.afiliadosService.updateAfiliado(afiliadoId, afiliado);
     }
+
+     // Desactivar un afiliado (no eliminarlo)
+     @Patch(':afiliadoId/deactivate')
+     async deactivateAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number) {
+       return this.afiliadosService.deactivateAfiliado(afiliadoId);
+     }
+ 
+     // Reactivar un afiliado
+     @Patch(':afiliadoId/reactivate')
+     reactivateAfiliado(@Param('afiliadoId', ParseIntPipe) afiliadoId: number) {
+         return this.afiliadosService.reactivateAfiliado(afiliadoId);
+     }
+
+     
 
 
     @Get('GenerarAfiliadosPDF/descargar')
