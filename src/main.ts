@@ -8,16 +8,16 @@ async function bootstrap() {
 
     // Habilitar la validación global
     app.useGlobalPipes(new ValidationPipe({
-      whitelist: true,  // Elimina propiedades no definidas en los DTO
-      forbidNonWhitelisted: true,  // Lanza una excepción si se envían propiedades no válidas
-      transform: true,  // Transforma los tipos de datos según el DTO
+      whitelist: true,  
+      forbidNonWhitelisted: true,  
+      transform: true,  
     }));
   
-  // Habilitar CORS
+ 
   app.enableCors({
-    origin: 'http://localhost:5173',  // Permite solicitudes desde tu frontend
+    origin: ['http://localhost:5173', 'https://front-end-cacpj.vercel.app'],  
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,  // Si tu API utiliza cookies o autenticación con credenciales
+    credentials: true,  
   });
   
   await app.listen(3000);
