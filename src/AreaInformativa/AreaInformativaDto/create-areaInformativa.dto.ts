@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { IsInt, IsPositive, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 
 export class CreateInformativaDto {
   @IsString()
-  titulo: string;
+  @IsOptional()
+  titulo?: string;
 
   @IsString()
-  contenido: string;
+  @IsOptional()
+  contenido?: string;
 
   @IsString()
   multimedia?: string;
