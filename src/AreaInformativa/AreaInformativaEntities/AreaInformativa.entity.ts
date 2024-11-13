@@ -15,10 +15,10 @@ export class AreaInformativa {
   id: number;
 
   @Column()
-  titulo: string;
+  titulo?: string;
 
   @Column()
-  contenido: string;
+  contenido?: string;
 
   @Column()
   multimedia: string;
