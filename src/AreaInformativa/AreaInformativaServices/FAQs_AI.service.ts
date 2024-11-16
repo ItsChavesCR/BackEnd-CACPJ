@@ -14,8 +14,8 @@ export class FAQsAiService {
 
     createFAQs(FAQsDto: CreateFAQsDto): Promise<FAQsAi> {
         const newPregunta = this.FAQsRepository.create({
-            Pregunta: FAQsDto.pregunta,
-            Respuesta: FAQsDto.respuesta,
+            Pregunta: FAQsDto.Pregunta,
+            Respuesta: FAQsDto.Respuesta,
         });
         return this.FAQsRepository.save(newPregunta);
     }
