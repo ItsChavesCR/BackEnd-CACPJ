@@ -44,7 +44,10 @@ import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
 import { Usuario } from './auth/loginEntities/login.entity';
 import { LoginModule } from './auth/loginModule/login.module';
 import { UploadModule } from './pre-registro/pre-registro.module';
+import { ConsultaContactoModule } from './AreaInformativa/AreaInformativaModule/Consulta-contacto.module';
+import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/consulta-contacto.entity';
 import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModule/GanaderiaConsultas.module';
+
 
 
 
@@ -80,7 +83,8 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
         FuenteFondos,
         patchAfiliado,
         PagoPsa,
-        Usuario
+        Usuario,
+        ConsultaContacto
       ],
       synchronize: true,
       logging: false,
@@ -109,6 +113,7 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     PagoPsaModule,
     LoginModule,
     UploadModule,
+    ConsultaContactoModule,
     GanaderiaConsultasModule
   ],
 
