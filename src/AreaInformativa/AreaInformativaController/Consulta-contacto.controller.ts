@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Post, Get, Body, Delete, Param } from '@nestjs/common';
-import { ConsultaContactoService } from '../AreaInformativaServices/consultaContacto.service';
+import { ConsultaContactoService } from '../AreaInformativaServices/ConsultaContacto.service';
 import { ContactFormDto } from '../AreaInformativaDto/contactForm.dto';
 
 @Controller('contacto')
