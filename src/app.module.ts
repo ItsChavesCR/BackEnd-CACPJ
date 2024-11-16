@@ -46,6 +46,8 @@ import { LoginModule } from './auth/loginModule/login.module';
 import { UploadModule } from './pre-registro/pre-registro.module';
 import { ConsultaContactoModule } from './AreaInformativa/AreaInformativaModule/Consulta-contacto.module';
 import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/consulta-contacto.entity';
+import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModule/GanaderiaConsultas.module';
+
 
 
 
@@ -111,7 +113,8 @@ import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/cons
     PagoPsaModule,
     LoginModule,
     UploadModule,
-    ConsultaContactoModule
+    ConsultaContactoModule,
+    GanaderiaConsultasModule
   ],
 
   controllers: [],
