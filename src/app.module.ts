@@ -44,6 +44,8 @@ import { PagoPsaModule } from './psa/psaModule/pago_psa.module';
 import { Usuario } from './auth/loginEntities/login.entity';
 import { LoginModule } from './auth/loginModule/login.module';
 import { UploadModule } from './pre-registro/pre-registro.module';
+import { ConsultaContactoModule } from './AreaInformativa/AreaInformativaModule/Consulta-contacto.module';
+import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/consulta-contacto.entity';
 
 
 
@@ -79,7 +81,8 @@ import { UploadModule } from './pre-registro/pre-registro.module';
         FuenteFondos,
         patchAfiliado,
         PagoPsa,
-        Usuario
+        Usuario,
+        ConsultaContacto
       ],
       synchronize: true,
       logging: false,
@@ -107,7 +110,8 @@ import { UploadModule } from './pre-registro/pre-registro.module';
     PatchAfiliadoModule,
     PagoPsaModule,
     LoginModule,
-    UploadModule
+    UploadModule,
+    ConsultaContactoModule
   ],
 
   controllers: [],
