@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateAfiliadoDto } from '../afiliadosDto/create-afiliados.dto';
 import { UpdateAfiliadoDto } from '../afiliadosDto/update-afiliados.dto';
 import { join, resolve } from 'path';
+import { Ganadero } from 'src/ganaderia/ganaderiaEntities/ganadero.entity';
 
 const PDFDocument = require('pdfkit-table');
 
@@ -21,6 +22,9 @@ export class AfiliadosService {
         return this.afiliadosRepository.find();
     }
 
+
+
+
     async getAfiliado(afiliadoId: number) {
         const afiliadoFound = await this.afiliadosRepository.findOne({
             where: { afiliadoId }
@@ -35,23 +39,55 @@ export class AfiliadosService {
         if (!/^\d{9}$/.test(afiliado.cedula)) {
             throw new BadRequestException('La cédula debe tener 9 dígitos');
         }
-
+    
         const afiliadoFound = await this.afiliadosRepository.findOne({ where: { cedula: afiliado.cedula } });
         if (afiliadoFound) {
             throw new HttpException('Afiliado already exists', HttpStatus.CONFLICT);
         }
-
+    
         const newAfiliado = this.afiliadosRepository.create({ ...afiliado });
-        return await this.afiliadosRepository.save(newAfiliado);
+        const savedAfiliado = await this.afiliadosRepository.save(newAfiliado);
+    
+        // Crear el registro en la tabla Ganadero si el afiliado comercializa
+        if (afiliado.comercializacion) {
+            const ganaderoRepository = this.afiliadosRepository.manager.getRepository(Ganadero);
+            const newGanadero = ganaderoRepository.create({
+                idGanadero: savedAfiliado.afiliadoId, // Usa el id del afiliado como idGanadero
+            });
+            await ganaderoRepository.save(newGanadero);
+        }
+    
+        return savedAfiliado;
     }
+    
 
     async updateAfiliado(afiliadoId: number, afiliado: UpdateAfiliadoDto) {
         const result = await this.afiliadosRepository.update({ afiliadoId }, afiliado);
+    
         if (result.affected === 0) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
+    
+        // Lógica adicional para manejar la relación con la tabla Ganadero
+        const ganaderoRepository = this.afiliadosRepository.manager.getRepository(Ganadero);
+    
+        // Verificar si el afiliado actualizado comercializa
+        if (afiliado.comercializacion) {
+            const existingGanadero = await ganaderoRepository.findOne({ where: { idGanadero: afiliadoId } });
+    
+            // Si no existe en Ganadero, lo creamos
+            if (!existingGanadero) {
+                const newGanadero = ganaderoRepository.create({ idGanadero: afiliadoId });
+                await ganaderoRepository.save(newGanadero);
+            }
+        } else {
+            // Si no comercializa y existe en Ganadero, lo eliminamos
+            await ganaderoRepository.delete({ idGanadero: afiliadoId });
+        }
+    
         return result;
     }
+    
 
     async deactivateAfiliado(afiliadoId: number) {
         const afiliado = await this.afiliadosRepository.findOne({ where: { afiliadoId } });
