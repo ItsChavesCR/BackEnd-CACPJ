@@ -9,8 +9,8 @@ export class Ganadero {
   @PrimaryColumn() // La PK es también la FK a Afiliado
   idGanadero: number;
 
-  @OneToOne(() => Afiliado) // Relación 1:1 con Afiliado
-  @JoinColumn({ name: 'idGanadero' }) // El campo FK es el mismo que el de la PK
+  @OneToOne(() => Afiliado, (afiliado) => afiliado.ganadero, { onDelete: 'CASCADE' }) // Relación con Afiliado
+  @JoinColumn({ name: 'idGanadero' }) // FK está en la misma columna que PK
   afiliado: Afiliado;
 
   @OneToMany(() => Envios, (envios) => envios.ganadero) // Relación 1:N con Envios
