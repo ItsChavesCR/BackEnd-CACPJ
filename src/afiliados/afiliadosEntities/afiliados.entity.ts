@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 
 import { IsNumberString, Length } from "class-validator";
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Ganadero } from "src/ganaderia/ganaderiaEntities/ganadero.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 
 @Entity('afiliados')
 export class Afiliado {
@@ -40,4 +41,8 @@ export class Afiliado {
 
     @Column({ default: true })  // Asegúrate de que este campo esté definido
     isActive: boolean;
+
+    // Relación 1:1 con Ganadero
+  @OneToOne(() => Ganadero, (ganadero) => ganadero.afiliado)
+  ganadero: Ganadero;
 }
