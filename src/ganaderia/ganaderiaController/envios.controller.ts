@@ -42,13 +42,13 @@ export class EnviosController {
   update(@Param('id') id: string, @Body() updateEnviosDto: UpdateEnviosDto) {
     return this.enviosService.update(+id, updateEnviosDto);
   }
-  /*
+  
     @Delete(':id')
     remove(@Param('id') id: string) {
       return this.enviosService.remove(+id);
     }
   
-    */
+    
 
 
   // Endpoint para generar y descargar el PDF de los envíos filtrados

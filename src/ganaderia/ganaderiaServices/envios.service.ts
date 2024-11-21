@@ -67,13 +67,13 @@ export class EnviosService {
     return this.enviosRepository.save(envio);
   }
 
-  /*
+  
   async remove(id: number): Promise<void> {
     const envio = await this.findOne(id);
     await this.enviosRepository.remove(envio);
   }
 
-  */
+  
 
   async getEnviosWithFilters(filtros: { idGanadero?: number, fechaInicio?: Date, fechaFin?: Date }): Promise<Envios[]> {
     const query = this.enviosRepository.createQueryBuilder('envios')
