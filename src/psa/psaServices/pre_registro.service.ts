@@ -54,19 +54,20 @@ export class PreRegistroPsaService {
 
     // Enviar correo de notificación
     const msg = {
-      to: 'sjimenezsofia@gmail.com', // Correo de destino (administrador)
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL'), // Correo del remitente configurado en el .env
-      subject: `Nuevo Pre-Registro PSA: ${savedPreRegistro.nombre} ${savedPreRegistro.apellido1}`,
-      text: `Se ha registrado un nuevo pre-registro de PSA con la siguiente información:
-      
-      Nombre: ${savedPreRegistro.nombre} ${savedPreRegistro.apellido1} ${savedPreRegistro.apellido2}
-      Cédula: ${savedPreRegistro.cedula}
-      Teléfono: ${savedPreRegistro.Telefono}
-      Modalidad PSA: ${savedPreRegistro.modalidad.Nombre_Modalidad}
-      Fecha de Pre-Registro: ${savedPreRegistro.fechaPreRegistro}
-      `,
-      
+      to: 'sjimenezsofia@gmail.com', // Correo del destinatario
+      from: this.configService.get<string>('SENDGRID_FROM_EMAIL'), // Correo del remitente
+      templateId: 'd-b8dca905498b4e2c8300a3948f154552', // Reemplázalo con tu Template ID de SendGrid
+      dynamicTemplateData: {
+        nombre: savedPreRegistro.nombre,
+        apellido1: savedPreRegistro.apellido1,
+        apellido2: savedPreRegistro.apellido2,
+        cedula: savedPreRegistro.cedula,
+        telefono: savedPreRegistro.Telefono,
+        modalidad: savedPreRegistro.modalidad.Nombre_Modalidad,
+        fechaPreRegistro: savedPreRegistro.fechaPreRegistro,
+      },
     };
+    
 
     try {
       await sgMail.send(msg);
