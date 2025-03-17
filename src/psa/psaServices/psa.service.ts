@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -26,28 +27,23 @@ export class PsaService {
   }
 
   async createPsa(createDto: CreatePsaDto): Promise<Psa> {
-    // Validar que la cédula tenga 9 dígitos
-    if (!/^\d{9}$/.test(createDto.Cedula)) {
-      throw new BadRequestException('La cédula debe tener 9 dígitos');
-    }
-
-    // Buscar si la modalidad existe por su nombre
+    // Validación de cédula...
+  
+    // Buscar modalidad por ID en lugar de nombre
     const modalidad = await this.modalidadRepository.findOne({
-      where: { Nombre_Modalidad: createDto.Nombre_Modalidad },
+      where: { Id_Modalidad: createDto.modalidadId },
     });
-
-    // Si no existe la modalidad, lanzar una excepción
+  
     if (!modalidad) {
       throw new BadRequestException('La modalidad indicada no existe');
     }
-
-    // Crear el nuevo PSA asignando la modalidad
+  
+    // Crear PSA asignando la modalidad
     const newPsa = this.psaRepository.create({
       ...createDto,
-      modalidad: modalidad, // Asignar el objeto Modalidad encontrado
+      modalidad: modalidad,
     });
-
-    // Guardar el nuevo PSA
+  
     return this.psaRepository.save(newPsa);
   }
 
@@ -104,20 +100,32 @@ export class PsaService {
   }
 
   async updatePsa(id: number, updateDto: UpdatePsaDto) {
-    // Primero encuentra el registro de Psa con la relación 'modalidad'
     const psa = await this.psaRepository.findOne({
       where: { Id_Psa: id },
-      relations: ['modalidad'], // Carga la relación 'modalidad'
+      relations: ['modalidad'],
     });
   
     if (!psa) {
       throw new NotFoundException('Psa not found');
     }
   
-    // Actualiza los campos de Psa (sin modificar modalidad)
+    // Si se incluye modalidadId, buscar y asignar la modalidad
+    if (updateDto.modalidadId) {
+      const modalidad = await this.modalidadRepository.findOne({
+        where: { Id_Modalidad: updateDto.modalidadId },
+      });
+  
+      if (!modalidad) {
+        throw new BadRequestException('La modalidad indicada no existe');
+      }
+  
+      psa.modalidad = modalidad;
+      delete updateDto.modalidadId; // Eliminar modalidadId para no guardarlo en la entidad
+    }
+  
+    // Actualizar los demás campos
     Object.assign(psa, updateDto);
   
-    // Guarda los cambios
     return this.psaRepository.save(psa);
   }
 
