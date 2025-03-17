@@ -1,5 +1,6 @@
-import { IS_DATE, IsDate, isDateString, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { isDate } from "date-fns";
+/* eslint-disable prettier/prettier */
+import {  IsDateString, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Min } from "class-validator";
+
 
 export class CreatePsaDto {
   @IsString()
@@ -18,9 +19,6 @@ export class CreatePsaDto {
   @IsNotEmpty()
   Correo: string;
 
-  @IsString()
-  @IsNotEmpty()
-  Nombre_Modalidad: string;  // El nombre de la modalidad que se enviará para la validación
 
   @IsNumber()
   @IsNotEmpty()
@@ -53,4 +51,9 @@ export class CreatePsaDto {
   @IsString()
   @IsNotEmpty()
   Ubicacion: string;
+
+  @IsInt({ message: 'El campo modalidadId debe ser un número entero' })
+  @IsPositive({ message: 'El campo modalidadId debe ser un número positivo' })
+  @Min(1, { message: 'El campo modalidadId debe ser mayor o igual a 1' })
+  modalidadId: number;
 }

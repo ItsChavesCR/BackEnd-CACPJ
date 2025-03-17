@@ -48,9 +48,6 @@ import { ConsultaContactoModule } from './AreaInformativa/AreaInformativaModule/
 import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/consulta-contacto.entity';
 import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModule/GanaderiaConsultas.module';
 
-
-
-
 @Module({
   imports: [
     // Configura ConfigModule para que sea global
@@ -58,7 +55,8 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
       isGlobal: true, // Esto permite que el ConfigService esté disponible en todos los módulos sin tener que importarlo cada vez
     }),
 
-    TypeOrmModule.forRoot({
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
       type: 'mysql',
       host: 'junction.proxy.rlwy.net',
       port: 31987,
@@ -86,10 +84,10 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
         Usuario,
         ConsultaContacto
       ],
-      synchronize: true,
+      synchronize: false,
       logging: false,
     }),
-
+  }),
     // Importación de otros módulos
     PreRegistroPsaModule,
     TipoCreditoModule,
@@ -99,8 +97,6 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     FAQsModule,
     ConsultasModule,
     ModalidadModule,
-    FuenteFondosModule,
-    AfiliadosModule,
     TipoGarantiaModule,
     FuenteFondosModule,
     AfiliadosModule,
