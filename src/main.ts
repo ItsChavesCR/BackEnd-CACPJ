@@ -15,7 +15,7 @@ async function bootstrap() {
   
  
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://front-end-cacpj.vercel.app, http://logkw4oos484g4kg8o4k4swk.46.202.177.60.sslip.io'],  
+    origin: ['http://localhost:5173', 'https://front-end-cacpj.vercel.app, http://logkw4oos484g4kg8o4k4swk.46.202.177.60.sslip.io/'],  
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,  
   });
