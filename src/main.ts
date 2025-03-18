@@ -17,7 +17,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173', 
       'https://front-end-cacpj.vercel.app', 
-      'http://logkw4oos484g4kg8o4k4swk.46.202.177.60.sslip.io',
+      'https://logkw4oos484g4kg8o4k4swk.cacpj.online',
       'https://www.cacpj.online/'
       
     ],
