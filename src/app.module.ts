@@ -58,10 +58,10 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
       type: 'mysql',
-      host: 'junction.proxy.rlwy.net',
-      port: 31987,
+      host: '46.202.177.60',
+      port: 3306,
       username: 'root',
-      password: 'ksfUlaHQlBEkIWQFSMyGOVRaovqKjaQk',
+      password: 'qpqKsvqE1I9UA5iwzdoCzBiEdyuYImFEXUBtjynrEeoFDBBWZ3YCEPDDm8RVFAwn',
       database: 'cacpjdb',
       entities: [
         TipoCredito,
@@ -84,7 +84,7 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
         Usuario,
         ConsultaContacto
       ],
-      synchronize: false,
+      synchronize: true,
       logging: false,
     }),
   }),
