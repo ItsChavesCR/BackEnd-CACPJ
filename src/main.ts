@@ -18,7 +18,7 @@ async function bootstrap() {
       'http://localhost:5173', 
       'https://front-end-cacpj.vercel.app', 
       'https://logkw4oos484g4kg8o4k4swk.cacpj.online',
-      'https://cacpj.online'
+      'https://www.cacpj.online'
       
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
