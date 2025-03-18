@@ -5,21 +5,26 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-    // Habilitar la validación global
-    app.useGlobalPipes(new ValidationPipe({
-      whitelist: true,  
-      forbidNonWhitelisted: true,  
-      transform: true,  
-    }));
   
- 
+  // Habilitar la validación global
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
+  
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://front-end-cacpj.vercel.app, http://logkw4oos484g4kg8o4k4swk.46.202.177.60.sslip.io/'],  
+    origin: [
+      'http://localhost:5173', 
+      'https://front-end-cacpj.vercel.app', 
+      'http://p4ko8og0scg8k0wg8sw80co4.46.202.177.60.sslip.io/'
+      
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,  
+    credentials: true,
   });
   
   await app.listen(3000);
 }
-bootstrap();
+
+bootstrap(); // Fixed function name (with lowercase 'b')
