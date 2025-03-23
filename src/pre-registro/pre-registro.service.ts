@@ -4,17 +4,20 @@ import { join } from 'path';
 
 @Injectable()
 export class UploadService {
+  // Configuración del transporter usando variables de entorno
+  private transporter = nodemailer.createTransport({
+    service: 'gmail',  // Gmail como proveedor de correo
+    auth: {
+      user: process.env.EMAIL_USER,  // Usando la variable de entorno con el correo
+      pass: process.env.EMAIL_PASS,  // Usando la variable de entorno con la contraseña
+    },
+  });
+
   // Método para enviar correo con o sin archivo adjunto
   async sendEmailWithAttachment(fromEmail: string, toEmail: string, formData: any, file?: Express.Multer.File) {
     try {
-      // Configurar el transporte de correo
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'achaba03x@gmail.com', // Cambia esto por tu correo
-          pass: 'smze wyrn okir gdim',   // Contraseña de aplicación generada
-        },
-      });
+      // Usar el correo de la variable de entorno como destino
+      const destinationEmail = process.env.EMAIL_RECIPIENT || process.env.EMAIL_USER;
       
       // Formatear la fecha actual
       const fechaObj = new Date();
@@ -25,8 +28,8 @@ export class UploadService {
 
       // Opciones del correo (Cuerpo generado dinámicamente según el formulario)
       const mailOptions: any = {
-        from: fromEmail,
-        to: toEmail,
+        from: process.env.EMAIL_USER, // Usar el correo de la variable de entorno como remitente
+        to: destinationEmail,         // Usar el correo de la variable de entorno como destinatario
         subject: this.getEmailSubject(formData),
         text: this.generatePlainTextEmailBody(formData, fechaFormateada),
         html: this.generateHtmlEmailBody(formData, fechaFormateada)
@@ -43,7 +46,7 @@ export class UploadService {
       }
 
       // Enviar el correo
-      await transporter.sendMail(mailOptions);
+      await this.transporter.sendMail(mailOptions);
       console.log('Correo enviado correctamente');
     } catch (error) {
       console.error('Error al enviar el correo:', error);
