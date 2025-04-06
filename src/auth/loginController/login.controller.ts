@@ -23,12 +23,25 @@ export class LoginController {
     return { message: 'Accediste a una ruta protegida!' };
   }
 
+  // @Put('change-password')
+  // @UseGuards(JwtAuthGuard)
+  // async changePassword(@Request() req, @Body() area: string, currentPassword: string, newPassword: string) {
+  //   const userId = req.user.sub; 
+  //   return this.authService.changePassword(area, currentPassword, newPassword);
+  // }
+
   @Put('change-password')
   @UseGuards(JwtAuthGuard)
-  async changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
-    const userId = req.user.sub; 
-    return this.authService.changePassword(userId, changePasswordDto);
+  async changePassword(
+    @Request() req,
+    @Body() changePasswordDto: ChangePasswordDto
+  ) {
+    const { area, password, newPassword } = changePasswordDto;
+    return this.authService.changePassword(area, password, newPassword);
   }
+  
+  
+
 
   @Get('usuarios')
   async getAllAreas() {

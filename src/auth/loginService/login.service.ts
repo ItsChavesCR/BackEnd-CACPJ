@@ -119,26 +119,33 @@ export class LoginService {
   }
 
   // Método para cambiar la contraseña (cuando el usuario está autenticado)
-  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
-    const { currentPassword, newPassword } = changePasswordDto;
-
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-
-    if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
-    }
-
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      throw new UnauthorizedException('La contraseña actual no es correcta');
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await this.userRepository.save(user);
-
-    return { message: 'Contraseña cambiada con éxito' };
+// Dentro de LoginService en login.service.ts
+async changePassword(area: string, password: string, newPassword: string) {
+  // Buscar al usuario por el área
+  const user = await this.userRepository.findOne({ where: { area } });
+  if (!user) {
+    throw new UnauthorizedException('Usuario no encontrado');
   }
+
+  // Validar que el área proporcionada coincide (esto es redundante si ya se buscó por área, pero se puede dejar como doble verificación)
+  if (user.area !== area) {
+    throw new UnauthorizedException('Área incorrecta');
+  }
+
+  // Verificar que la contraseña actual ingresada coincide con la almacenada
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new UnauthorizedException('La contraseña actual no es correcta');
+  }
+
+  // Hashear la nueva contraseña y actualizar el registro
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await this.userRepository.save(user);
+
+  return { message: 'Contraseña cambiada con éxito' };
+}
+
 
   // Método para obtener todas las áreas de los usuarios
   async getAllAreas() {
