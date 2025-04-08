@@ -114,4 +114,31 @@ export class PagoPsaService {
   }
   
 
+  // Método para editar un pago
+  async editarPago(idPsa: number, numeroPago: number, pagoActualizado: { Fecha_Pago: Date }): Promise<PagoPsa> {
+    // Buscar el PSA
+    const psa = await this.psaRepository.findOne({ where: { Id_Psa: idPsa } });
+    
+    if (!psa) {
+      throw new NotFoundException(`No se encontró PSA con el ID ${idPsa}`);
+    }
+    
+    // Buscar el pago específico
+    const pago = await this.pagoPsaRepository.findOne({
+      where: { psa: { Id_Psa: idPsa }, Numero_Pago: numeroPago },
+      relations: ['psa'],
+    });
+    
+    if (!pago) {
+      throw new NotFoundException(`No se encontró el pago con el número ${numeroPago} para el PSA ${idPsa}`);
+    }
+    
+    // Actualizar la fecha de pago
+    pago.Fecha_Pago = pagoActualizado.Fecha_Pago;
+    
+    // Guardar los cambios
+    return this.pagoPsaRepository.save(pago);
+  }
+  
+
 }

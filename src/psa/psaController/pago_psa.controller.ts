@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { PagoPsaService } from '../psaServices/pago_psa.service';
 import { PagoPsa } from '../psaEntities/pago_psa.entity';
 
@@ -36,5 +36,15 @@ export class PagoPsaController {
     ): Promise<void> {
         return this.pagoPsaService.eliminarPago(idPsa, numeroPago);
     }
+
+      // Endpoint para editar un pago
+      @Patch(':idPsa/pago/:numeroPago')
+      async editarPago(
+          @Param('idPsa', ParseIntPipe) idPsa: number,
+          @Param('numeroPago', ParseIntPipe) numeroPago: number,
+          @Body() pagoActualizado: { Fecha_Pago: Date },
+      ): Promise<PagoPsa> {
+          return this.pagoPsaService.editarPago(idPsa, numeroPago, pagoActualizado);
+      }
 }
 
