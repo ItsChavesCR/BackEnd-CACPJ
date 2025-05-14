@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Modalidad } from './modalidad.entity';
 import { PagoPsa } from './pago_psa.entity';
@@ -44,6 +43,9 @@ export class Psa {
 
   @Column()
   Ubicacion: string;
+
+  @Column({ default: true })
+  isActive: boolean;
 
   // Relación ManyToOne con Modalidad
   @ManyToOne(() => Modalidad, (modalidad) => modalidad.psa)

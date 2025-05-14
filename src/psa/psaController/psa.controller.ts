@@ -1,10 +1,7 @@
-/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, Res, NotFoundException } from '@nestjs/common';
 import { Psa } from '../psaEntities/Psa.entity';
 import { PsaService } from '../psaServices/psa.service';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
-
-
 
 
 @Controller('psa')
@@ -41,24 +38,6 @@ export class PsaController {
     return this.psaService.updatePsa(id, updateDto);
   }
 
-  @Get('GenerarPsaPDF/descargar')
-  async downloadPDF(
-    @Query('anoIngreso') anoIngreso: number,
-    @Query('modalidad') modalidad: string,
-    @Query('cedula') cedula: string,
-    @Res() res
-  ): Promise<void> {
-    const buffer = await this.psaService.generarPDFPsa({ anoIngreso, modalidad, cedula });
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename=psa_reporte.pdf',
-      'Content-Length': buffer.length,
-    });
-
-    res.end(buffer);
-  }
-
   @Get('historial/cedula/:cedula')
   async obtenerHistorialPorCedula(@Param('cedula') cedula: string): Promise<{ año: number, modalidad: string }[]> {
     const historial = await this.psaService.obtenerHistorialPorCedula(cedula);
@@ -69,4 +48,17 @@ export class PsaController {
 
     return historial;
   }
+
+  // Desactivar un PSA (estado isActive = false)
+  @Patch(':id/deactivate')
+  async deactivatePsa(@Param('id', ParseIntPipe) id: number): Promise<Psa> {
+    return this.psaService.deactivatePsa(id);
+  }
+
+  // Reactivar un PSA (estado isActive = true)
+  @Patch(':id/reactivate')
+  async reactivatePsa(@Param('id', ParseIntPipe) id: number): Promise<Psa> {
+    return this.psaService.reactivatePsa(id);
+  }
+
 }
