@@ -84,7 +84,7 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
         Usuario,
         ConsultaContacto
       ],
-      synchronize: true,
+      synchronize: false,
       logging: false,
     }),
   }),
