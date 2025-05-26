@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, Res, NotFoundException } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+
+import { Controller, Get, Post, Body, Param, Patch, Delete, ParseIntPipe, Query, NotFoundException } from '@nestjs/common';
 import { Psa } from '../psaEntities/Psa.entity';
 import { PsaService } from '../psaServices/psa.service';
 import { CreatePsaDto } from '../psaDto/create-Psa.dto';
