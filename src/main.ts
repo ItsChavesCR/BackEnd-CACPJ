@@ -15,10 +15,10 @@ async function bootstrap() {
   
   app.enableCors({
     origin: [
-      'http://localhost:5173', 
-      'https://front-end-cacpj.vercel.app', 
-      'https://logkw4oos484g4kg8o4k4swk.cacpj.online',
-      'https://www.cacpj.online'
+      'http://localhost:5173',
+      'https://www.cacpj.online',
+      'https://www.cacjicaral.com',
+      'https://cacjicaral.com'
       
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
