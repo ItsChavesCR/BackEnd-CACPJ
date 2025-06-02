@@ -58,11 +58,11 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
       type: 'mysql',
-      host: '46.202.177.60',
+      host: '31.97.15.156',
       port: 3306,
       username: 'root',
-      password: 'qpqKsvqE1I9UA5iwzdoCzBiEdyuYImFEXUBtjynrEeoFDBBWZ3YCEPDDm8RVFAwn',
-      database: 'cacpjdb',
+      password: 'QgU56lRtHarBlKbxZLL6WmiBAxLECBY08M508QL9c8af0b444VANLOKGLuOReZT8',
+      database: 'cacjicaraldb',
       entities: [
         TipoCredito,
         PreguntasFrecuentes,
