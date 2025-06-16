@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { IsNumberString, Length } from "class-validator";
+import { IsNumberString, Matches } from "class-validator";
 import { Ganadero } from "src/ganaderia/ganaderiaEntities/ganadero.entity";
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 
@@ -12,7 +12,10 @@ export class Afiliado {
 
     @Column( { unique : true } )
     @IsNumberString({ no_symbols: true }, { message: 'La cédula debe contener solo números.' }) 
-    @Length(9, 9, { message: 'La cédula debe tener exactamente 9 dígitos.' }) 
+    @Matches(/^\d{9,10}$/, {
+  message: 'La cédula debe tener 9 o 10 dígitos numéricos.',
+})
+
     cedula: string
 
     @Column()

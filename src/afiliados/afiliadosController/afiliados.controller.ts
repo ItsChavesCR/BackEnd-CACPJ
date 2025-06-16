@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Res } from '@nestjs/common';
 import { AfiliadosService } from '../afiliadosService/afiliados.service';
 import { Afiliado } from '../afiliadosEntities/afiliados.entity';
 import { CreateAfiliadoDto } from '../afiliadosDto/create-afiliados.dto';
 import { UpdateAfiliadoDto } from '../afiliadosDto/update-afiliados.dto';
-import { get } from 'http';
+
 
 @Controller('afiliados')
 export class AfiliadosController {
