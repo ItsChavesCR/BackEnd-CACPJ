@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { IsBoolean, IsEmail, IsIn, IsNotEmpty, IsNumber, IsString, Length, Min, Max } from "class-validator"
+import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsString, Min, Matches } from "class-validator"
 
 export class CreatePatchAfiliadoDto {
     @IsString()
     @IsNotEmpty()
-    @Length(9, 9, { message: 'La cédula debe tener exactamente 9 dígitos' })
+    @Matches(/^\d{9,10}$/, {
+  message: 'La cédula debe tener 9 o 10 dígitos numéricos',
+})
     cedula: string;
 
     @IsString()

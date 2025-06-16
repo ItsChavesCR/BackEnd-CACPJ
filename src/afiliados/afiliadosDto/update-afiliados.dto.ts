@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
 
-import { IsOptional, IsString, IsEmail, IsNumber, IsBoolean, Length, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsEmail, IsNumber, IsBoolean, Length, Min, Max, Matches } from 'class-validator';
 
 export class UpdateAfiliadoDto {
   @IsOptional()
   @IsString()
-  @Length(9, 9, { message: 'La cédula debe tener exactamente 9 dígitos.' })
+  @Matches(/^\d{9,10}$/, {
+  message: 'La cédula debe tener 9 o 10 dígitos numéricos',
+})
+
   cedula: string; // Cambiado de número a string para manejar cédulas con ceros iniciales
 
   @IsOptional()
