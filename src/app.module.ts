@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config'; 
+import { ConfigModule, ConfigService } from '@nestjs/config';
 // Importación de tus módulos
 import { PreRegistroPsaModule } from './psa/psaModule/pre_registro.module';
 import { TipoCreditoModule } from './credito/creditoModule/tipo_credito.module';
@@ -47,6 +47,11 @@ import { UploadModule } from './pre-registro/pre-registro.module';
 import { ConsultaContactoModule } from './AreaInformativa/AreaInformativaModule/Consulta-contacto.module';
 import { ConsultaContacto } from './AreaInformativa/AreaInformativaEntities/consulta-contacto.entity';
 import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModule/GanaderiaConsultas.module';
+import { IndicadorKri } from './kri/kriEntities/indicador-kri.entity';
+import { ResultadoKri } from './kri/kriEntities/resultado-kri.entity';
+import { KriModule } from './kri/kriModule/kri.module';
+import { AuditoriaAccion } from './auditoria/auditoriaEntities/auditoria-accion.entity';
+import { AuditoriaModule } from './auditoria/auditoriaModule/auditoria.module';
 
 @Module({
   imports: [
@@ -56,38 +61,49 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     }),
 
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-      type: 'mysql',
-      host: '31.97.15.156',
-      port: 3306,
-      username: 'root',
-      password: 'QgU56lRtHarBlKbxZLL6WmiBAxLECBY08M508QL9c8af0b444VANLOKGLuOReZT8',
-      database: 'cacjicaraldb',
-      entities: [
-        TipoCredito,
-        PreguntasFrecuentes,
-        ListaRequisitos,
-        PreRegistroPsa,
-        Psa,
-        FAQsAi,
-        ConsultasAI,
-        Modalidad,
-        Afiliado,
-        Categoria, 
-        AreaInformativa,
-        TipoGarantia,
-        Ganadero,
-        Envios,
-        FuenteFondos,
-        patchAfiliado,
-        PagoPsa,
-        Usuario,
-        ConsultaContacto
-      ],
-      synchronize: false,
-      logging: false,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const dbPort = Number(configService.getOrThrow<string>('DB_PORT'));
+        if (!Number.isInteger(dbPort) || dbPort < 1 || dbPort > 65535) {
+          throw new Error('DB_PORT debe ser un puerto válido');
+        }
+
+        return {
+          type: 'mysql',
+          host: configService.getOrThrow<string>('DB_HOST'),
+          port: dbPort,
+          username: configService.getOrThrow<string>('DB_USER'),
+          password: configService.getOrThrow<string>('DB_PASSWORD'),
+          database: configService.getOrThrow<string>('DB_NAME'),
+          entities: [
+            TipoCredito,
+            PreguntasFrecuentes,
+            ListaRequisitos,
+            PreRegistroPsa,
+            Psa,
+            FAQsAi,
+            ConsultasAI,
+            Modalidad,
+            Afiliado,
+            Categoria,
+            AreaInformativa,
+            TipoGarantia,
+            Ganadero,
+            Envios,
+            FuenteFondos,
+            patchAfiliado,
+            PagoPsa,
+            Usuario,
+            ConsultaContacto,
+            IndicadorKri,
+            ResultadoKri,
+            AuditoriaAccion,
+          ],
+          synchronize: false,
+          logging: false,
+        };
+      },
     }),
-  }),
     // Importación de otros módulos
     PreRegistroPsaModule,
     TipoCreditoModule,
@@ -110,7 +126,9 @@ import { GanaderiaConsultasModule } from './AreaInformativa/AreaInformativaModul
     LoginModule,
     UploadModule,
     ConsultaContactoModule,
-    GanaderiaConsultasModule
+    GanaderiaConsultasModule,
+    KriModule,
+    AuditoriaModule
   ],
 
   controllers: [],
