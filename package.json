@@ -90,6 +90,9 @@
     "testEnvironment": "node"
   },
   "overrides": {
-    "@nestjs/platform-express": {}
+    "@nestjs/platform-express": {},
+    "proxy-addr": "2.0.8",
+    "sha.js": "2.4.12",
+    "jws": "3.2.3"
   }
 }
