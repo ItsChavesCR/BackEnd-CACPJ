@@ -10,14 +10,14 @@ const bcrypt = require('bcryptjs');
 const root = path.resolve(__dirname, '..');
 
 async function main() {
-  const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+  const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
   assert.ok(
     ['127.0.0.1', '::1'].includes(DB_HOST),
     'La integración solo admite una dirección loopback literal',
   );
-  assert.equal(DB_NAME, 'cacpj_oe4_dev', 'Se requiere la base aislada de OE4');
+  assert.equal(DB_DATABASE, 'cacpj_oe4_dev', 'Se requiere la base aislada de OE4');
   assert.ok(
-    DB_USER && DB_PASSWORD,
+    DB_USERNAME && DB_PASSWORD,
     'Faltan credenciales locales de desarrollo',
   );
   assert.ok(
@@ -49,9 +49,9 @@ async function main() {
     connection = await mysql.createConnection({
       host: DB_HOST,
       port: Number(DB_PORT),
-      user: DB_USER,
+      user: DB_USERNAME,
       password: DB_PASSWORD,
-      database: DB_NAME,
+      database: DB_DATABASE,
       connectTimeout: 5000,
       multipleStatements: true,
       supportBigNumbers: true,
@@ -73,14 +73,14 @@ async function main() {
     const [columns] = await connection.execute(
       'SELECT COLUMN_TYPE, COLUMN_KEY, IS_NULLABLE FROM information_schema.COLUMNS ' +
         'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
-      [DB_NAME, 'usuarios', 'id'],
+      [DB_DATABASE, 'usuarios', 'id'],
     );
     assert.equal(columns[0].COLUMN_TYPE, 'int');
     assert.equal(columns[0].COLUMN_KEY, 'PRI');
     assert.equal(columns[0].IS_NULLABLE, 'NO');
     const [engines] = await connection.execute(
       'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
-      [DB_NAME, 'usuarios'],
+      [DB_DATABASE, 'usuarios'],
     );
     assert.equal(engines[0].ENGINE, 'InnoDB');
     console.log('FK usuarios verificada: INT con signo, PK e InnoDB');

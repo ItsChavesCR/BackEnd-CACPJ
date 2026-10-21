@@ -72,9 +72,9 @@ import { AuditoriaModule } from './auditoria/auditoriaModule/auditoria.module';
           type: 'mysql',
           host: configService.getOrThrow<string>('DB_HOST'),
           port: dbPort,
-          username: configService.getOrThrow<string>('DB_USER'),
+          username: configService.getOrThrow<string>('DB_USERNAME'),
           password: configService.getOrThrow<string>('DB_PASSWORD'),
-          database: configService.getOrThrow<string>('DB_NAME'),
+          database: configService.getOrThrow<string>('DB_DATABASE'),
           entities: [
             TipoCredito,
             PreguntasFrecuentes,

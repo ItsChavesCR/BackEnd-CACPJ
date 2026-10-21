@@ -25,7 +25,8 @@ async function bootstrap() {
     credentials: true,
   });
   
-  await app.listen(3000);
+  const port = Number.parseInt(process.env.PORT ?? '3000', 10);
+  await app.listen(port);
 }
 
 bootstrap(); // Fixed function name (with lowercase 'b')

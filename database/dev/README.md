@@ -3,9 +3,9 @@
 Estos archivos son exclusivos de desarrollo. No representan el esquema de
 producción y no deben ejecutarse sobre servicios institucionales.
 
-El backend obtiene su conexión de `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`
-y `DB_NAME`. No tiene credenciales de conexión de respaldo. `.env.example`
-contiene un ejemplo sin contraseña y `.env` está ignorado por Git.
+El backend obtiene su conexión de `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`
+y `DB_DATABASE`. No tiene credenciales de conexión de respaldo. `.env.example`
+contiene valores ficticios y `.env` está ignorado por Git.
 
 Para una prueba aislada, crear un contenedor nuevo de MySQL 8.4 con la base
 `cacpj_oe4_dev`. Publicar MySQL solo en `127.0.0.1`, con un puerto libre, y generar
